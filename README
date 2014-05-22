@@ -1,1 +1,15 @@
-apa
+Changes to the grammar
+- the_ functions (-gen-debug)
+- R-grammar (-gen-gram)
+
+When generating a pgf 
+> gf -make X.gf
+
+one can use the additional flags (optionally)
+
+> gf -make -gen-debug -gen-gram X.gf
+
+If one used -gen-gram, two new files will be generated - XComp.gf and XCompConc.gf which are the R-grammar. 
+One can debug them without any extra flag
+
+> gf -make XCompConc.gf 
