@@ -1,0 +1,9 @@
+* The GF sources need to be updated if the Haskell version changes
+
+* the files where the relevant changes are : 
+      - gf.cabal(a greater version of gf- overwrites the previous one, take out unnecessary packages)
+      - Setup.hs (take away unnecessary languages and web/server stuff)
+      - Option.hs(add the options -gen-gram and -gen-debug in the shell application)
+      - GrammarToPGF.hs(add the functions that generate the abstract categories and the new grammar)  
+    
+* all the previous examples work now!

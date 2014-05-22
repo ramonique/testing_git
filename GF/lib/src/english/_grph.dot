@@ -1,0 +1,39 @@
+graph {
+n0[label = "DetCN : NP", style = "solid", shape = "plaintext"] ;
+n0_0[label = "DetQuant : Det", style = "solid", shape = "plaintext"] ;
+n0 -- n0_0 [style = "solid"];
+n0_0_0[label = "IndefArt : Quant", style = "solid", shape = "plaintext"] ;
+n0_0 -- n0_0_0 [style = "solid"];
+n1_0_0[label = "NumPl : Num", style = "solid", shape = "plaintext"] ;
+n0_0 -- n1_0_0 [style = "solid"];
+n1_0[label = "UseN : CN", style = "solid", shape = "plaintext"] ;
+n0 -- n1_0 [style = "solid"];
+n0_1_0[label = "book_N : N", style = "solid", shape = "plaintext"] ;
+n1_0 -- n0_1_0 [style = "solid"];
+}
+graph {
+n0[label = "DetCN : NP", style = "solid", shape = "plaintext"] ;
+n0_0[label = "DetQuant : Det", style = "solid", shape = "plaintext"] ;
+n0 -- n0_0 [style = "solid"];
+n0_0_0[label = "IndefArt : Quant", style = "solid", shape = "plaintext"] ;
+n0_0 -- n0_0_0 [style = "solid"];
+n1_0_0[label = "NumPl : Num", style = "solid", shape = "plaintext"] ;
+n0_0 -- n1_0_0 [style = "solid"];
+n1_0[label = "UseN : CN", style = "solid", shape = "plaintext"] ;
+n0 -- n1_0 [style = "solid"];
+n0_1_0[label = "book_N : N", style = "solid", shape = "plaintext"] ;
+n1_0 -- n0_1_0 [style = "solid"];
+}
+graph {
+n0[label = "DetCN : NP", style = "solid", shape = "plaintext"] ;
+n0_0[label = "DetQuant : Det", style = "solid", shape = "plaintext"] ;
+n0 -- n0_0 [style = "solid"];
+n0_0_0[label = "IndefArt : Quant", style = "solid", shape = "plaintext"] ;
+n0_0 -- n0_0_0 [style = "solid"];
+n1_0_0[label = "NumPl : Num", style = "solid", shape = "plaintext"] ;
+n0_0 -- n1_0_0 [style = "solid"];
+n1_0[label = "UseN : CN", style = "solid", shape = "plaintext"] ;
+n0 -- n1_0 [style = "solid"];
+n0_1_0[label = "book_N : N", style = "solid", shape = "plaintext"] ;
+n1_0 -- n0_1_0 [style = "solid"];
+}

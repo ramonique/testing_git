@@ -1,0 +1,140 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+
+ 
+\begin{document}
+
+
+
+\title{Ambiguity in PMCFG}
+
+\maketitle 
+
+\section{PMCFG}
+
+PMCFG definition is taken from Krasimir's thesis.  Short version here:
+
+In PMCFG we have:
+\begin{itemize}
+\item $T$ -- set of terminals in the grammar
+\item $N^C$ -- concrete categories
+\item $F^C$ -- concrete functions
+\item $(T*)^d$ -- d-tuples of strings over T 
+\item f $\in F^C$ has the signature $(T*)^{d_1(f)} \times
+  (T*)^{d_2(f)} \times ... \times (T*)^{d_{a(f)}} \to (T*)^{r(f)}$
+\item f = ($\alpha_1, \alpha_2 ... \alpha_{r(f)}$) where $\alpha_i$ is
+  a sequence of terminals and <k,l>, where $1 \leq k \leq a(f)$ and $1
+  \leq l \leq d_k(f)$ --- argument of the function and field from the argument.  
+\item a(f) = arity of f
+\item ($f t_1 ... t_{a(f)}$) is a concrete tree of cat A if $t_i$ is
+  of cat $B_i$ and there is a production $A \to f [B_1
+  ... B_{a(f)}]$. If a(f) = 0, then the tree is a leaf. 
+\item d(C) - dimension of a category (how many fields it should have)
+\item \textbf{parse} : (A : Cat ) -> Str $\to$ Set (tree of A)
+\item \textbf{lin} : (A : Cat) -> tree of A -> ($x_1, x_2, ... x_{d{A}}$)
+\end{itemize}
+
+
+\textbf{Assumptions on the grammar}
+\begin{itemize}
+\item every grammar has a start category, S
+\item d(S) = 1
+\end{itemize}
+
+\section{Ambiguity}
+
+\textbf{Total ambiguity}
+The trees of category A
+\begin{itemize}
+\item $T_1 = f_1\ t_1^1\ t_2^1\ ...\ t_{a(f_1)}^1$ and
+\item $T_2 = f_2\ t_1^2\ t_2^2\ ...\ t_{a(f_2)}^2$
+\end{itemize}
+generate a \textbf{total ambiguity} if \\
+lin (A, $T_1$) = lin (A, $T_2$) (they are identical on all indices of
+the array).
+
+\textbf{Example}: 
+\begin{itemize}
+\item word senses in a multilingual dictionary (where they are
+supposed to have a different translation in the other languages). 
+\item {\it you}(singular, plural, polite, familiar) in the English Phrasebook.
+\end{itemize}
+
+
+\textbf{Idea}:
+Factorize over those first, in order to avoid duplicated examples.
+
+\vspace{10mm}
+
+\textbf{Ambiguity}
+The trees of category $A_1$, resp $A_2$ (not necessarily distinct) 
+\begin{itemize}
+\item $T_1 = f_1\ t_1^1\ t_2^1\ ...\ t_{a(f_1)}^1$ and
+\item $T_2 = f_2\ t_1^2\ t_2^2\ ...\ t_{a(f_2)}^2$
+\end{itemize}
+generate an \textbf{ambiguity} if, for 
+lin($A_1, T_1$) = ($x_1^1,\ x_2^1\ ...\ x_{d(A_1)}^1$) and 
+lin($A_2, T_2$) = ($x_1^2,\ x_2^2\ ...\ x_{d(A_2)}^2$),
+$\exists$ $1 \leq i \leq d(A_1)$ and $1 \leq j \leq d(A_2)$ with
+\textbf{$x_i^1 = x_j^2$} and $\exists$ y and y' sequences of terminals
+(possibly empty) such that
+parse (S, y$x_i^1$y'') leads to (at least) $T_S^1$ and $T_S^2$, such
+that
+\begin{itemize}
+\item $T_1$ is a subtree of $T_S^1$ on field i
+\item $T_2$ is a subtree of $T_S^2$ on field j
+\end{itemize}
+
+i.e. $\exists$ a production in the derivation of $T_S^k$ that uses
+argument i from subtree $T_1$, resp j from subtree $T_2$. 
+
+\textbf{Remark:}
+$T_1$ and $T_2$ don't necessarily need to be of the same cat, but
+$T_S^1$ and $T_S^2$ are (S). See {\it duck} example ("I made her
+duck").
+
+\textbf{Discussion:}
+We might need to consider 2 contexts instead of one, or change the
+definition so that the trees are of the same category ?
+
+
+ 
+\section{Contexts} 
+
+\textbf{Remark:} We consider contexts with one hole. 
+
+\textbf{Contexts:}
+For ($T_1,T_2$) a pair of trees that generate an ambiguity, we call
+the \textbf{context}, the pair ($T_S^1/T_1, T_S^2/T_2$) (trees with a
+hole, corresponding to $T_1$ and $T_2$), such as
+\begin{itemize}
+\item lin (S, $T_S^1$) = lin (S, $T_S^2$)
+\item $\exists$ ($T'_1, T'_2$) of the same cats as ($T_1,T_2$) such as 
+lin ($T_S^1 [T_1 \to T'_1]$) /= lin ($T_S^2 [T_2 \to T'_2]$)
+\end{itemize}
+ 
+\vspace{10mm}
+
+\textbf{Context Equivalence}
+$T_S^1/T_1 \equiv T_S^2/T_1$ 
+if the derivations of $T_S^1$ and
+$T_S^2$ use the same components of $T_1$ (same indices).
+
+
+
+\textbf{Remarks/Discussion:}
+\begin{itemize}
+\item there is no gender now (or other inherent parameters), because
+  they would just be in a different class
+\item it works for the example "min hund \"{a}r vild"/'mitt barn
+  \"{a}r vilt", where {\it vilt} is only ambiguous for utrum nouns.
+\item need reflection grammar, but we also need to unify the different
+  equivalence classes (not done directly)
+\item might need \textbf{the$\_$} functions for evaluation.
+\item fits with our algorithm about generating contexts, and with the
+  one about generating S-trees and then chopping down to ambiguities
+  (at least I think so :P) 
+\end{itemize}
+
+\end{document} 

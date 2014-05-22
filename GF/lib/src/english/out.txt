@@ -1,0 +1,1 @@
+LangEng : active2passive dconcat digits2num digits2numeral dn dn10 dn100 dn1000 dn1000000a dn1000000b dn1000000c nd nd10 nd100 nd1000 nd1000000 num2digits

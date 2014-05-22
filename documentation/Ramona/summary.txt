@@ -1,0 +1,95 @@
+Summary 
+======
+
+
+Previous attempts
+---------------
+
+* the_ functions(abstract object for each category)
+     + easier to shrink ambiguous trees
+     + compact representation of ambiguous cases
+     - more than 1 per category(cartesian product of inherent parameters)
+     - harder to decide which one to choose  
+
+* reflection grammars(grammars compiled to another grammar)
+     + can give a clearer separation of categories into equivalence classes based on inherent parameters
+     + provide one the_ function per category(new categories, that is)
+     - difficult to understand for the user
+     - harder to unify the information about the original categories(when having a number of categories that correspond to equivalence classes of an original category, it's hard to switch between them when shrinking a tree)
+    
+* tree sets
+     + compact and readable representation
+     - computationally expensive for large grammars
+
+* generate contexts from Koen's generator
+     + nice way of finding the smallest context that behaves in a certain manner(uses the arguments in the same way)
+     - when the context is part of the ambiguity, we can miss spotting the ambiguity, because we choose a context which is equivalent, but un-ambiguous(example1, 9 and 4 from repository) 
+     - after finding the contexts, we still need to find ambiguous fillings for the slots
+
+Other ideas
+---------
+ 
+* simplify grammar by only keeping words that are potentially ambiguous and fill up with the_functions
+      + more compact grammars
+      - more work to do for entries containing common particle(ex. most adjectives have a field 'more', because this is how we make the comparative, since they are glued in the linearization, if we only look at individual words, we might assume that most adjectives are potentially ambiguous because they all contain 'more')
+
+-----------
+--New idea--
+-----------
+
+* use Koen's generator to render a list of trees in ascending order(up to some depth and some number of nodes)
+* see which ones are ambiguous - make union of all the trees and keep as context
+* keep database of fingerprints(context + set of trees that fill it) 
+* lookup if trees occur already in the database -> current context is larger, throw it away, otherwise add example to database
+
+* TODO: 
+------
+   ! abstract over the context to isolate sets of ambiguities(avoid cartesian product of ambiguities)  
+   ! generalize contexts before updating database
+
+* Issues: 
+-------
+   -contexts are assumed to have 1 hole(potential other holes might come from generalization, but they will be represented differently - with boolean field to mark tracked/untracked maybe) 
+        -- bad example: You saw the sheep -> 
+                 {You_sg saw the sheep_sg, You_pl saw the sheep_sg, You_sg saw the sheep_pl, You_pl saw the sheep_pl} assuming that there are no other ways to make a sentence containing 'you' or 'sheep'. 
+    - problem with recursive grammars(example7) - lots of context appear from unwinding the loop a number of times
+
+* Small changes 
+-------------
+   ! in order to handle many holed-trees, use original grammar + the_ functions to generate trees - in this way one can get the smallest and most general contexts in the beginning
+
+
+
+--------------
+--Discussion--
+--------------
+   * What to do for recursive grammars(theoretical problem, in practice if one unwinds the loop twice, this should cover most actual usages of GF grammars)
+   * If we generate trees from grammars with the_ functions, do we still need to shrink the context ?
+   * How to generalize ? (idea - top-down with the_ functions) 
+
+
+  Homework for all:
+
+  Come up with a definition of ordering:
+
+        t1 ~< t2
+    for all G, if t1 is ambiguous in G, then t2 is ambiguous in G 
+
+
+          
+------------
+--Examples--
+------------
+
+Context + subtree can trigger ambiguity:
+
+         S
+        / \
+       /   \
+      ?    VP
+           / \
+          is  ADJ{class1: unamb
+		  class2: amb}
+
+So depending on the class of ?, the sentence is either ambiguous or unambiguous. 
+

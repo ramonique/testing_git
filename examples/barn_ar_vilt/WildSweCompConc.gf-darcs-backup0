@@ -1,0 +1,18 @@
+concrete WildSweCompConc of WildSweComp =
+{
+
+lincat C0 , C1 , C2 , C3 , C4 , C5 = { indep : Str ; attr : Str } ;
+
+lin wild_A_15_0_ = { indep = "wild_A" ; attr = "wild_A" } ;
+lin CompA_8_1_0 p1 = { indep = "CompA" ++p1.attr ; attr = "(" ++ "CompA" ++p1.attr ++ ")" } ;
+lin CompN_9_1_5 p1 = { indep = "CompN" ++p1.attr ; attr = "(" ++ "CompN" ++p1.attr ++ ")" } ;
+lin child_N_12_2_ = { indep = "child_N" ; attr = "child_N" } ;
+lin game_N_14_2_ = { indep = "game_N" ; attr = "game_N" } ;
+lin dog_N_13_3_ = { indep = "dog_N" ; attr = "dog_N" } ;
+lin Pred_10_4_2_1 p1 p2 = { indep = "Pred" ++p1.attr ++p2.attr ; attr = "(" ++ "Pred" ++p1.attr ++p2.attr ++ ")" } ;
+lin Pred_11_4_3_1 p1 p2 = { indep = "Pred" ++p1.attr ++p2.attr ; attr = "(" ++ "Pred" ++p1.attr ++p2.attr ++ ")" } ;
+lin _2_5 n = n ;
+lin _3_5 n = n ;
+
+
+}

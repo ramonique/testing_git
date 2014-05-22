@@ -1,0 +1,7 @@
+((0,0),"Adjective")
+((-3,-3),"Float")
+((-2,-2),"Int")
+((1,1),"NounPhrase")
+((2,2),"SimpleNoun")
+((-1,-1),"String")
+((3,3),"Verb")

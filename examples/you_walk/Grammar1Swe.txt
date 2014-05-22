@@ -1,0 +1,60 @@
+abstract Grammar1 {
+  flag startcat = "Sentence" ;
+  cat Float ;
+  cat Int ;
+  cat Pronoun ;
+  cat Sentence ;
+  cat String ;
+  cat Verb ;
+  fun PredVP : Pronoun -> Verb -> Sentence ;
+  fun Walk : Verb ;
+  fun You_Pl : Pronoun ;
+  fun You_Sg : Pronoun ;
+}
+concrete Grammar1Swe {
+  productions
+    C0 -> F8[]
+    C0 -> F9[]
+    C1 -> F6[C0,C2]
+    C2 -> F7[]
+  lindefs
+    C0 -> F0
+    C1 -> F2
+    C2 -> F4
+  linrefs
+    C0 -> F1
+    C1 -> F3
+    C2 -> F5
+  lin
+    F0 := (S2) ['lindef Pronoun']
+    F1 := (S0) ['lindef Pronoun']
+    F2 := (S2) ['lindef Sentence']
+    F3 := (S0) ['lindef Sentence']
+    F4 := (S2) ['lindef Verb']
+    F5 := (S0) ['lindef Verb']
+    F6 := (S1) [PredVP]
+    F7 := (S5) [Walk]
+    F8 := (S4) [You_Pl]
+    F9 := (S3) [You_Sg]
+  sequences
+    S0 := <0,0>
+    S1 := <0,0> <1,0>
+    S2 := {0,0}
+    S3 := "du"
+    S4 := "ni"
+    S5 := "åker"
+  categories
+    Float := range  [CFloat .. CFloat]
+             labels ["s"]
+    Int := range  [CInt .. CInt]
+           labels ["s"]
+    Pronoun := range  [C0 .. C0]
+               labels ["s"]
+    Sentence := range  [C1 .. C1]
+                labels ["s"]
+    String := range  [CString .. CString]
+              labels ["s"]
+    Verb := range  [C2 .. C2]
+            labels ["s"]
+  printnames
+}

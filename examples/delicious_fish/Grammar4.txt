@@ -1,0 +1,80 @@
+abstract Grammar4 {
+  flag startcat = "Sentence" ;
+  cat Adjective ;
+  cat Float ;
+  cat Int ;
+  cat NounPhrase ;
+  cat Sentence ;
+  cat SimpleNoun ;
+  cat String ;
+  fun Delicious : Adjective ;
+  fun Fish : SimpleNoun ;
+  fun NounPl : SimpleNoun -> NounPhrase ;
+  fun NounSg : SimpleNoun -> NounPhrase ;
+  fun Potato : SimpleNoun ;
+  fun PredVP : NounPhrase -> Adjective -> Sentence ;
+}
+concrete Grammar4Eng {
+  productions
+    C0 -> F8[]
+    C1 -> F11[C4]
+    C2 -> F10[C4]
+    C3 -> F13[C1,C0]
+    C3 -> F14[C2,C0]
+    C4 -> F9[]
+    C4 -> F12[]
+  lindefs
+    C0 -> F0
+    C1 -> F2
+    C3 -> F4
+    C4 -> F6
+  linrefs
+    C0 -> F1
+    C1 -> F3
+    C2 -> F3
+    C3 -> F5
+    C4 -> F7
+  lin
+    F0 := (S2) ['lindef Adjective']
+    F1 := (S0) ['lindef Adjective']
+    F2 := (S2) ['lindef NounPhrase']
+    F3 := (S0) ['lindef NounPhrase']
+    F4 := (S2) ['lindef Sentence']
+    F5 := (S0) ['lindef Sentence']
+    F6 := (S2,S2) ['lindef SimpleNoun']
+    F7 := (S0) ['lindef SimpleNoun']
+    F8 := (S3) [Delicious]
+    F9 := (S4,S4) [Fish]
+    F10 := (S1) [NounPl]
+    F11 := (S0) [NounSg]
+    F12 := (S5,S6) [Potato]
+    F13 := (S8) [PredVP]
+    F14 := (S7) [PredVP]
+  sequences
+    S0 := <0,0>
+    S1 := <0,1>
+    S2 := {0,0}
+    S3 := "delicious"
+    S4 := "fish"
+    S5 := "potato"
+    S6 := "potatoes"
+    S7 := "the" <0,0> "are" <1,0>
+    S8 := "the" <0,0> "is" <1,0>
+  categories
+    Adjective := range  [C0 .. C0]
+                 labels ["s"]
+    Float := range  [CFloat .. CFloat]
+             labels ["s"]
+    Int := range  [CInt .. CInt]
+           labels ["s"]
+    NounPhrase := range  [C1 .. C2]
+                  labels ["s"]
+    Sentence := range  [C3 .. C3]
+                labels ["s"]
+    SimpleNoun := range  [C4 .. C4]
+                  labels ["s Sg"
+                          "s Pl"]
+    String := range  [CString .. CString]
+              labels ["s"]
+  printnames
+}
