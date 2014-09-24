@@ -1,0 +1,1 @@
+abstract All = YouWalk, Duck, WithTelescope ;
