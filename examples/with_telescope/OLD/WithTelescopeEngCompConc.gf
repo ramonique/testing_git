@@ -1,4 +1,4 @@
-concrete Grammar2EngCompConc of Grammar2EngComp =
+concrete WithTelescopeEngCompConc of WithTelescopeEngComp =
 {
 
 lincat C0 , C1 , C2 , C3 , C4 , C5 , C6 = { indep : Str ; attr : Str } ;

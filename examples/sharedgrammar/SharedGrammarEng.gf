@@ -1,4 +1,4 @@
-concrete GrammarEng of Grammar = open Prelude in {
+concrete SharedGrammarEng of SharedGrammar = open Prelude in {
 
 lincat 
   NounPhrase  = {s : NPForm => Str} ;

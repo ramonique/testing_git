@@ -1,4 +1,4 @@
-abstract Grammar = {
+abstract SharedGrammar = {
 
 cat SimpleNoun; 
     NounPhrase;

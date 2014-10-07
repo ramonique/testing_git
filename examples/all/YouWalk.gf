@@ -1,4 +1,5 @@
-abstract YouWalk = Grammar ** {
+--# -path=.:../sharedgrammar
+abstract YouWalk = SharedGrammar ** {
 
 flags startcat=S ;
 

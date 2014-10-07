@@ -1,4 +1,5 @@
-concrete WithTelescopeEng of WithTelescope = GrammarEng ** {
+--# -path=.:../sharedgrammar
+concrete WithTelescopeEng of WithTelescope = SharedGrammarEng ** {
 
 
 lin the_SimpleNoun = {s = "NOUN"} ;

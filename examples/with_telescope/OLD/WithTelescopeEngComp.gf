@@ -1,4 +1,4 @@
-abstract Grammar2EngComp =
+abstract WithTelescopeEngComp =
 {
 
 flags startcat = C3;
