@@ -1,15 +1,14 @@
-concrete YouWalkEng of YouWalk = 
-{
-lincat Pronoun, Verb, Sentence = {s: Str} ;
+--# -path=.:../sharedgrammar
+concrete YouWalkEng of YouWalk = SharedGrammarEng ** {
+
 
 lin the_Verb = {s = "VERB"} ;
 lin the_Pronoun = {s = "PRONOUN"} ;
 
-lin You_Sg = {s = "you"} ;
-lin You_Pl = {s = "you"} ;
+lin You_Sg = mkPronoun "you" "you" "your" ;
+lin You_Pl = mkPronoun "you" "you" "your" ;
 
-lin Walk = {s = "walk"} ;
+lin Walk = mkV "walk" ;
 
-lin PredVP pron verb = {s = pron.s ++ verb.s };
 
 }
