@@ -1,4 +1,4 @@
-abstract Grammar5ConcComp =
+abstract GrammarAConcComp =
 {
 
 flags startcat = C2;

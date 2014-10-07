@@ -22,9 +22,9 @@ fun
   PredVP  : NounPhrase -> VerbPhrase -> S ;
 
   --Originally from WithTelescope
-  DetNP : SimpleNoun -> NounPhrase ;
+  DetNP  : SimpleNoun -> NounPhrase ;
   MassNP : SimpleNoun -> NounPhrase ;
-  Pron2NP : Pronoun -> NounPhrase ;
+  PronNP : Pronoun -> NounPhrase ;
 
   -- PrepVP : VerbPhrase -> PP -> VerbPhrase ;
   -- SimpVP : Verb2 -> NounPhrase -> VerbPhrase ;

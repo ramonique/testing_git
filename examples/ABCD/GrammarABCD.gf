@@ -1,4 +1,4 @@
-abstract Grammar6 = {
+abstract GrammarABCD = {
 
 flags startcat = S;
 

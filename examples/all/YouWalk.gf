@@ -10,6 +10,5 @@ fun You_Pl : Pronoun ;
 
 fun Walk : Verb ;
 
-fun PredVPPron : Pronoun -> Verb -> S ;
 
 }

@@ -1,4 +1,4 @@
-concrete Grammar7ConcCompConc of Grammar7ConcComp =
+concrete GrammarASConcCompConc of GrammarASConcComp =
 {
 
 lincat C0 , C1 = { indep : Str ; attr : Str } ;

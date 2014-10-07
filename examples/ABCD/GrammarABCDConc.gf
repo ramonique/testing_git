@@ -1,4 +1,4 @@
-concrete Grammar6Conc of Grammar6 = {
+concrete GrammarABCDConc of GrammarABCD = {
 
 
 lincat A, B, C, D, S = {s : Str} ;

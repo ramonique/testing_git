@@ -1,4 +1,4 @@
-abstract Grammar7 = {
+abstract GrammarAS = {
 
 flags startcat = S ;
 

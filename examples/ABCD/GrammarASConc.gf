@@ -1,4 +1,4 @@
-concrete Grammar7Conc of Grammar7 = {
+concrete GrammarASConc of GrammarAS = {
 
 
 lincat A,  S = {s : Str};

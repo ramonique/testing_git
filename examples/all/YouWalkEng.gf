@@ -4,11 +4,10 @@ concrete YouWalkEng of YouWalk = GrammarEng ** {
 lin the_Verb = {s = "VERB"} ;
 lin the_Pronoun = {s = "PRONOUN"} ;
 
-lin You_Sg = {s = "you"} ;
-lin You_Pl = {s = "you"} ;
+lin You_Sg = mkPronoun "you" "you" "your" ;
+lin You_Pl = mkPronoun "you" "you" "your" ;
 
-lin Walk = {s = "walk"} ;
+lin Walk = mkVerb "walk" ;
 
-lin PredVPPron pron verb = {s = pron.s ++ verb.s };
 
 }

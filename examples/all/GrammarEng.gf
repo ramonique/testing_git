@@ -4,7 +4,7 @@ lincat
   NounPhrase  = {s : NPForm => Str} ;
   PP = {s: Str};
   Preposition = {s : Str} ;
-  Pronoun = {s : Str} ;
+  Pronoun = {s : NPForm => Str} ;
   SimpleNoun = {s : NPForm => Str} ;
   Verb   = {s : Str} ;
   Verb2  = {s : Str ; obj : NPForm} ;
@@ -19,20 +19,25 @@ param
 
 
 oper
-  mkNP : (s,o,p : Str) -> NounPhrase = \s,o,p ->
-   lin NounPhrase {s = table {Subj => s ;
+  mkNoun : (s,o,p : Str) ->  {s : NPForm => Str} = \s,o,p ->
+    {s = table {Subj => s ;
 	       Obj  => o ;
 	       Poss => p}
    } ;
 
   mkN : (s,o,p : Str) -> SimpleNoun = \s,o,p ->
-   lin SimpleNoun {s = table {Subj => s ;
-	       Obj  => o ;
-	       Poss => p}
-   } ;
+   lin SimpleNoun (mkNoun s o p) ;
+
+  mkNP : (s,o,p : Str) -> NounPhrase = \s,o,p ->
+   lin NounPhrase (mkNoun s o p) ;
+
+  mkPronoun : (s,o,p : Str) -> NounPhrase = \s,o,p ->
+   lin Pronoun (mkNoun s o p) ;
 
   mkNP1 : Str -> NounPhrase = \s ->
-   lin NounPhrase {s = \\_ => s} ;
+   lin NounPhrase (mkNoun s s s) ;
+
+  mkV : Str -> Verb =  \v -> lin Verb (ss v) ;
 
 
 lin
@@ -46,8 +51,9 @@ lin
 
 
   --Originally from WithTelescope
-  DetNP n = {s = \\cas => "the" ++ (n.s ! cas)} ;
+  DetNP n  = {s = \\cas => "the" ++ (n.s ! cas)} ;
   MassNP n = n ;
+  PronNP p = p ;
 
   -- PrepVP vp pp = {s = vp.s ++ pp.s } ;
   -- SimpVP v np = {s = v.s ++ np.s ! v.obj} ;

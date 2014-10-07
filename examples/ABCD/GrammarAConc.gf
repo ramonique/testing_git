@@ -1,4 +1,4 @@
-concrete Grammar5Conc of Grammar5 = {
+concrete GrammarAConc of GrammarA = {
 
 
 
