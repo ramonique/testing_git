@@ -114,25 +114,47 @@ ambiguousR g rg t =
              else Nothing 
 
 
- {-
-ambiguousR :: Grammar -> Grammar -> Tree -> IO (Maybe  [Tree])
-ambiguousR g rg t =  
- do 
-   putStrLn $ showTree t
-   let trs = parse g (rlin t g rg)
-   if length trs >= 2 then return $ Just (map (getRTree rg) trs)
-             else return Nothing 
-    -}
-
 
 
 -------------------
 -- change from here  
 
+-- give name of the gf 
+runAll :: String -> String -> IO ()
+runAll abstractFile langName = 
+  let newName = reverse $ takeWhile (/='/') $ tail $ dropWhile (/='.') $ reverse abstractFile
+      nameWithDir = reverse $ tail $ dropWhile (/='.') $ reverse abstractFile 
+      concName = newName++langName
+      gName = nameWithDir ++ ".pgf"
+      rgName = nameWithDir ++ langName ++"Comp.pgf" 
+      gramDir = reverse $ dropWhile (/='/') $ reverse abstractFile  
+   in 
+    do currDir <- getCurrentDirectory
+       putStrLn $ show currDir
+       changeWorkingDirectory gramDir 
+       putStrLn $ show gramDir
+       readProcess "gf" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
+       readProcess "gf" ["-make", concName++"CompConc.gf"] []
+       changeWorkingDirectory currDir
+       g <- readGrammar gName 
+       rg <- readGrammar rgName
+       prettyPrintAmbiguities g rg showAmb
+
+
+
+prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Ambiguity -> String) -> IO ()
+prettyPrintAmbiguities g rg showFunc = 
+  do ambs <- computeAmbiguities g rg
+     mapM_ (putStrLn.(showFunc rg)) ambs
+    
+showAmbR _ (trs, ctx) = "{ trees : " ++ concat (intersperse " , " $ map showTree trs) ++ "\n context : " ++ show ctx ++ "\n}" 
+
+showAmb rg (trs, ctx) = "{ trees : " ++ concat (intersperse " , " $ map (linearize rg) trs) ++ "\n context : " ++ linearize rg ctx      
+
 computeAmbiguities :: Grammar -> Grammar -> IO [Ambiguity]
 computeAmbiguities gr rg = 
     do trees <- findStartTrees gr rg
-       putStrLn $ "The trees are "  ++ (show $ map (linearize rg) $ concat $ trees)
+       --putStrLn $ "The trees are "  ++ (show $ map (linearize rg) $ concat $ trees)
        computeFingerprint gr rg [] trees
   where 
   computeFingerprint :: Grammar -> Grammar -> [Ambiguity] -> [[Tree]] -> IO [Ambiguity]
@@ -142,7 +164,7 @@ computeAmbiguities gr rg =
           d <- difference rg t
           if numberOfHoles d == 1 then 
               let trs = map (fromJust . getAmbTrees rg d) t  in
-                do putStrLn $ "the ambiguous trees are : "++ show trs 
+                do --putStrLn $ "the ambiguous trees are : "++ niceShow trs 
                    computeFingerprint gr rg (updateFingerprint ambs (trs,d)) ts
             else fail $ "not proper context for " ++ show t ++ " --> " ++ show d            
 
@@ -151,6 +173,8 @@ computeAmbiguities gr rg =
        let trees = map fst ambs 
           in if or [setInstance tr trs | tr <- trees] then ambs 
               else (trs,ctx) : ambs
+
+niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
     
 
 setInstance :: [Tree] -> [Tree] -> Bool
@@ -213,7 +237,7 @@ diff (t1,t2)
 difference :: Grammar -> [Tree] -> IO Tree
 difference gr (t1:t2:[]) = 
          do d <- diff (t1,t2) 
-            putStrLn $ "the difference of " ++ show t1 ++ " and " ++ show t2 ++ " is "++ show d ++"\n"
+            --putStrLn $ "the difference of " ++ show t1 ++ " and " ++ show t2 ++ " is "++ show d ++"\n"
             return d
 difference gr (t1:t2:ts) = 
    do d <- diff (t1,t2) 
