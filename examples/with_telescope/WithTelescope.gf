@@ -3,9 +3,6 @@ abstract WithTelescope = SharedGrammar ** {
 
 flags startcat=S;
 
---fun the_SimpleNoun : SimpleNoun ;
---fun the_Verb2 : Verb2 ;
-
 fun BasicPP : Preposition -> NounPhrase -> PP ;
 fun PrepNP : NounPhrase -> PP -> NounPhrase ;
 fun PrepVP : VerbPhrase -> PP -> VerbPhrase ;

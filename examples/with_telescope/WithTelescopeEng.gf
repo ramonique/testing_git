@@ -1,10 +1,6 @@
 --# -path=.:../sharedgrammar
 concrete WithTelescopeEng of WithTelescope = SharedGrammarEng ** {
 
-
-lin the_SimpleNoun = {s = "NOUN"} ;
-lin the_Verb2 = {s = "VERB"; obj = Obj} ;
-
 lin BasicPP prep np = {s = prep.s ++ np.s ! Obj} ;
 lin PrepNP np pp = {s = \\cas => np.s ! cas ++ pp.s} ;
 
