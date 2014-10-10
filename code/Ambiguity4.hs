@@ -133,8 +133,8 @@ runAll abstractFile langName =
        putStrLn $ show currDir
        changeWorkingDirectory gramDir 
        putStrLn $ show gramDir
-       readProcess "gf-test" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
-       readProcess "gf-test" ["-make", concName++"CompConc.gf"] []
+       readProcess "gf" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
+       readProcess "gf" ["-make", concName++"CompConc.gf"] []
        changeWorkingDirectory currDir
        g <- readGrammar gName 
        rg <- readGrammar rgName
