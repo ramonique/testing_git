@@ -133,24 +133,24 @@ runAll abstractFile langName =
        putStrLn $ show currDir
        changeWorkingDirectory gramDir 
        putStrLn $ show gramDir
-       readProcess "gf" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
-       readProcess "gf" ["-make", concName++"CompConc.gf"] []
+       readProcess "gf-test" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
+       readProcess "gf-test" ["-make", concName++"CompConc.gf"] []
        changeWorkingDirectory currDir
        g <- readGrammar gName 
        rg <- readGrammar rgName
-       prettyPrintAmbiguities g rg showAmb
+       prettyPrintAmbiguities g rg showAmbIK
 
 
-prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Ambiguity -> String) -> IO ()
-prettyPrintAmbiguities g rg showFunc = 
-  do ambs <- computeAmbiguities g rg
-     mapM_ (putStrLn.(showFunc rg)) ambs
+-- prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Ambiguity -> String) -> IO ()
+-- prettyPrintAmbiguities g rg showFunc = 
+--   do ambs <- computeAmbiguities g rg
+--      mapM_ (putStrLn.(showFunc rg)) ambs
 
 
 ---------
 --Additions by Inari and Koen
 
-{--
+--
 
 -- Changes here: 
 -- * the showFunc takes two grammars instead of one (normal grammar and a R-grammar

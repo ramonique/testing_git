@@ -52,7 +52,6 @@ lin
 
   --Originally from WithTelescope
   DetNP n  = {s = \\cas => "the" ++ (n.s ! cas)} ;
-  MassNP n = n ;
   PronNP p = p ;
 
   -- PrepVP vp pp = {s = vp.s ++ pp.s } ;

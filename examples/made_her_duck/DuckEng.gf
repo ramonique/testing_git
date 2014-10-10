@@ -16,6 +16,7 @@ lin
        o = np1.s ! Poss ++ np2.s ! Obj ;
        p = np1.s ! Poss ++ np2.s ! Poss
    in mkNP s o p ;
+  MassNP n = n ;
 
 
 }

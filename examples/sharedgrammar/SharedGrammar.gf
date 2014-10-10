@@ -23,10 +23,6 @@ fun
 
   --Originally from WithTelescope
   DetNP  : SimpleNoun -> NounPhrase ;
-  MassNP : SimpleNoun -> NounPhrase ;
   PronNP : Pronoun -> NounPhrase ;
-
-  -- PrepVP : VerbPhrase -> PP -> VerbPhrase ;
-  -- SimpVP : Verb2 -> NounPhrase -> VerbPhrase ;
 
 }

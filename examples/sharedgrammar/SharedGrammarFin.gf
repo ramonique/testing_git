@@ -45,6 +45,7 @@ lin
 
   --Originally from Duck
   VtoVP v = v ; 
+--  V2toVP v2 np = ss (v2.s ++ np.s ! v2.obj) ;
   PredVP np vp = ss (np.s ! Nom ++ vp.s) ;
 
 
