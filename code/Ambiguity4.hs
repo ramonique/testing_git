@@ -133,20 +133,59 @@ runAll abstractFile langName =
        putStrLn $ show currDir
        changeWorkingDirectory gramDir 
        putStrLn $ show gramDir
-       readProcess "gf" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
-       readProcess "gf" ["-make", concName++"CompConc.gf"] []
+       readProcess "gf-test" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
+       readProcess "gf-test" ["-make", concName++"CompConc.gf"] []
        changeWorkingDirectory currDir
        g <- readGrammar gName 
        rg <- readGrammar rgName
        prettyPrintAmbiguities g rg showAmb
 
 
-
 prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Ambiguity -> String) -> IO ()
 prettyPrintAmbiguities g rg showFunc = 
   do ambs <- computeAmbiguities g rg
      mapM_ (putStrLn.(showFunc rg)) ambs
-    
+
+
+---------
+--Additions by Inari and Koen
+
+{--
+
+-- Changes here: 
+-- * the showFunc takes two grammars instead of one (normal grammar and a R-grammar
+-- * we add filterIdentical to remove identical trees
+
+prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Grammar -> Ambiguity -> String) -> IO ()
+prettyPrintAmbiguities g rg showFunc = 
+  do ambs <- filterIdentical `fmap` computeAmbiguities g rg
+     mapM_ (putStrLn.(showFunc g rg)) ambs
+     putStrLn $ "The number of ambiguities : " ++ show (length ambs)
+
+--}
+
+
+--replace hole with one of the trees and linearize that
+--then show all the trees
+showAmbIK :: Grammar -> Grammar -> Ambiguity -> String
+showAmbIK g rg (trs@(t1:_),ctx) = "Sentence: " ++ rlin (fill ctx t1) g rg ++ 
+                               "\n Context: " ++ lin ctx ++ 
+                               "\n   Trees: " ++ concat (intersperse "\n        | " $
+                                                         map lin trs) ++ "\n"
+    where lin = concat . words . linearize rg
+
+filterIdentical :: [Ambiguity] -> [Ambiguity]
+filterIdentical = nubBy f
+   where f (x,_) (y,_) = sort x == sort y
+
+fill :: Tree -> Tree -> Tree
+fill (App f xs) t | isHole f = t
+                  | otherwise = App f (map (`fill` t) xs)
+
+--End additions by Inari and Koen
+--------- 
+
+
 showAmbR _ (trs, ctx) = "{ trees : " ++ concat (intersperse " , " $ map showTree trs) ++ "\n context : " ++ show ctx ++ "\n}" 
 
 showAmb rg (trs, ctx) = "{ trees : " ++ concat (intersperse " , " $ map (linearize rg) trs) ++ "\n context : " ++ linearize rg ctx      
