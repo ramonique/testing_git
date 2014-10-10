@@ -1,0 +1,81 @@
+ABCD:
+  TODO
+  Has three variations of a simple grammar with terms A, B, C, D and S. 
+
+barn_ar_vilt:
+  A complement is ambiguous only if the subject is of neutrum gender.
+  NOUN is wild_A =
+     NOUN<utrum> är vild -- NOUN<neutrum> är vilt
+
+  NOUN is game_N =
+     NOUN<utrum> är vilt -- NOUN<neutrum> är vilt
+
+
+complement-fixing_mouse_antibody:
+  TODO
+  Apposition and modification.
+
+delicious_fish:
+  This is ambiguous only in the NP level ("fish" can be either Sg or Pl), 
+  but not on the sentence level: 
+  "the fish is delicious" or "the fish are delicious".
+
+made_her_duck:
+  Ambiguity is caused by three factors:
+    a) verb "make" can be transitive (V2), ditransitive (V3) or
+       take a verbal complement (V2V)
+    b) "duck" can be either a verb or a noun, thus it can fit as a complement 
+       of any of those verb types
+    c) "her" can be direct object, indirect object or possessive, 
+       so "made her duck" can be 
+         * NP (Poss her) (N duck)
+         * (NP her) (V duck)
+         * (NP her) (N duck)
+
+many_tigers_panthers_fish:
+  TODO
+
+obj_or_adv:
+  This grammar is ambiguous in Finnish but not in English.
+  Problem: part_Prep doesn't have a string linearisation in Finnish,
+  it just affects the case of the dependent noun.
+  from7behind_Prep has a string and it affects the case of the dependent noun.
+  Result: these trees are ambiguous
+     a) BasicPP from7behind_Prep (the_NounPhrase_1 0)
+     b) BasicPP part_Prep (PossNP (the_NounPhrase_1 0) taka_N)
+    in context : PrepVP ( VtoVP ( the_Verb_1 0 ) ) ['*'] ) 
+
+
+  Variation in ObjAdvWithTransVerbs:
+    Adding transitive verbs adds another ambiguity: 
+    the string "NOUN<gen> takaa" can be parsed as a PP, 
+    or it can be parsed as a NounPhrase in an object case.
+
+orange_and_apple:
+ TODO
+
+sharedgrammar:
+  This is the base for the grammars. It has categories 
+  SimpleNoun; NounPhrase; Verb; Verb2; Verb3; Verb2Verb; VerbPhrase; PP ;  Preposition ; Pronoun ; S .
+  It doesn't have any words in it, so it doesn't have ambiguities.
+
+tiger_panther_fish:
+  TODO
+
+understand:
+  A string can be parsed as a VP either
+
+    a) V2 + noun
+    b) V which is a particle verb 
+
+  The offending items are understand_V and the combination get_V2 reason_N.
+  This is a single ambiguity.
+
+  In case of other particle verbs, they should be reported as a different
+  ambiguity. TODO an example that has more particle verbs in it.
+
+with_telescope:
+  Basic PP attachment problem.
+
+you_walk:
+  Lexical ambiguity: you can be singular or plural.
