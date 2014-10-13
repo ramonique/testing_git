@@ -1,20 +1,20 @@
-concrete UnderstandEst of Understand = open CatEst, ParadigmsEst, SyntaxEst, LexiconEst, DictEst in {
+concrete UnderstandEstNoRG of Understand = open Prelude in {
 
-   lincat
-     S = S ;
-     V = V ; 
-     V2 = V2 ;
-     N  = N ;
-     NP = NP ;
-     VP = VP ; --}
+  lincat
+     S = SS ;
+     V = {s : Str ; p : Str} ; 
+     V2 = {s : Str ; p : Str} ;
+     VP = SS ; 
+     N  = SS ;
+     NP = SS ;
 
   lin 
-    Pred np vp = mkS (mkCl np vp) ;
-    IntransVP v  = mkVP v ;
-    TransVP v2 np = mkVP v2 np ;
-    understand_V = lin V understand_V2 ;
-    get_V2 = saama_V2 ;
-    reason_N = mkNP aru_N ;
-    dog_N = mkNP koer_N ;
+    Pred np vp = ss (np.s ++ vp.s);
+    IntransVP v  = ss (v.s ++ v.p) ;
+    TransVP v2 np = ss (v2.s ++ v2.p ++ np.s) ;
+    understand_V = {s = "saab" ; p = "aru"} ;
+    get_V2 = {s = "saab" ; p = []} ;
+    reason_N = ss "aru" ;
+    dog_N = ss "koer" ;
 
 }

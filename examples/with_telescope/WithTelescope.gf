@@ -1,5 +1,5 @@
 --# -path=.:../sharedgrammar
-abstract WithTelescope = SharedGrammar ** {
+abstract WithTelescope = SharedGrammar  ** {
 
 flags startcat=S;
 

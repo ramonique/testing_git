@@ -22,7 +22,7 @@ type Cat  = CId
 
 data Tree
   = App{ top :: Symbol, args :: [Tree] }
- deriving ( Eq )
+ deriving ( Eq, Ord )
 
 -- symbol
 
