@@ -90,7 +90,7 @@ rlin t g rg = linearize g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t)
 maxTreeSize = 15 
 -- maximum size of the trees we want to generate
 
-maxTreeNo = 300
+maxTreeNo = 100
 -- maximum number of trees we deal with
 
 
@@ -99,13 +99,14 @@ maxTreeNo = 300
 findStartTrees g rg = 
    let gr' = rg{symbols = filter (not . isThe) (symbols rg)}
        sCat = startCat rg  
-       rezult = take maxTreeNo $ concat $ [[(snd st) i | i <- [0 .. (fst st) - 1] ] | s <- [1..maxTreeSize], let st = sizes rg sCat s] 
+       rezult = take maxTreeNo $ concat $ [[(snd st) i | i <- [0 .. (fst st) - 1] ] | s <- [0..maxTreeSize], let st = sizes rg sCat s] 
     in --return $ --[fst st | s <- [1..], let st = sizes gr sCat s] 
                -- [(l, parse g l) | t <- rezult, let l = rlin t g rg] 
               -- map fromJust $ nub $ filter isJust $ 
             --do rezs <- mapM (ambiguousR g rg) rezult
           let rezs = map (ambiguousR g rg) rezult in 
-               return $ map fromJust $ nub $ filter isJust rezs
+              do  --putStrLn $ "\n\n\nThe initial trees are : " ++ show rez' ++ "\n\n\n"
+                  return $ map fromJust $ nub $ filter isJust rezs
 
 ambiguousR :: Grammar -> Grammar -> Tree -> Maybe  [Tree]
 ambiguousR g rg t =  
@@ -146,6 +147,7 @@ prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Ambiguity -> String)
 prettyPrintAmbiguities g rg showFunc = 
   do ambs <- computeAmbiguities g rg
      mapM_ (putStrLn.(showFunc rg)) ambs
+     putStrLn $ "The number of ambiguities is : " ++ show (length ambs)
     
 showAmbR _ (trs, ctx) = "{ trees : " ++ concat (intersperse " , " $ map showTree trs) ++ "\n context : " ++ show ctx ++ "\n}" 
 
@@ -154,47 +156,55 @@ showAmb rg (trs, ctx) = "{ trees : " ++ concat (intersperse " , " $ map (lineari
 computeAmbiguities :: Grammar -> Grammar -> IO [Ambiguity]
 computeAmbiguities gr rg = 
     do trees <- findStartTrees gr rg
-       --putStrLn $ "The trees are "  ++ (show $ map (linearize rg) $ concat $ trees)
+       --putStrLn $ "The trees are : \n"  ++ (show $ map (linearize rg) $ concat $ trees)
+       --putStrLn "\n\n\n"
        computeFingerprint gr rg [] trees
   where 
   computeFingerprint :: Grammar -> Grammar -> [Ambiguity] -> [[Tree]] -> IO [Ambiguity]
   computeFingerprint gr rg ambs [] = return ambs
   computeFingerprint gr rg ambs (t:ts) = 
-       do --putStrLn $ show t ++ " where the union is : "
+       do --putStrLn "\n**New iteration**\n"
+          --putStrLn $ show t ++ " where the union is : "
           d <- difference rg t
           if numberOfHoles d == 1 then 
               let trs = map (fromJust . getAmbTrees rg d) t  in
-                do --putStrLn $ "the ambiguous trees are : "++ niceShow trs 
-                   computeFingerprint gr rg (updateFingerprint ambs (trs,d)) ts
+                do --putStrLn $ "\nthe ambiguous trees are : "++ niceShow trs 
+                   newF <- updateFingerprint ambs (trs,d) 
+                   computeFingerprint gr rg newF ts
             else fail $ "not proper context for " ++ show t ++ " --> " ++ show d            
 
-  updateFingerprint :: [Ambiguity] -> Ambiguity -> [Ambiguity]
+  updateFingerprint :: [Ambiguity] -> Ambiguity -> IO [Ambiguity]
   updateFingerprint ambs (trs, ctx) = 
        let trees = map fst ambs 
-          in if or [setInstance tr trs | tr <- trees] then ambs 
-              else (trs,ctx) : ambs
+          in 
+             do comps <- mapM (\x -> setInstance x trs) trees
+                if or comps then return ambs 
+                   else return $ (trs,ctx) : ambs
 
 niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
     
+-- setInstance : Ambiguous trees from fingerprint -> New ambiguous trees -> Should they be added ?
+setInstance :: [Tree] -> [Tree] -> IO Bool
+setInstance ts cs = 
+   do putStrLn $ "\n\ncomparison between " ++ show ts ++ "  \n and \n  " ++ show cs ++ " is : "
+      let r =  or [equalOrGen t c | c<- cs, t <-ts]
+      putStr $ " r is : " ++ show r
+      return r 
 
-setInstance :: [Tree] -> [Tree] -> Bool
-setInstance ts cs = and [or [isInstanceOf t c | c<- cs] | t <-ts]
+-- t1 is equal or a generalization of t2
+equalOrGen :: Tree -> Tree -> Bool 
+equalOrGen t1 t2 = 
+   if isThe (top t1) then True
+      else  top t1 == top t2 && and [equalOrGen x y | (x,y) <- zip (args t1) (args t2)] 
 
-isInstanceOf :: Tree -> Tree -> Bool
-isInstanceOf t1 t2 = 
- if top t1 /= top t2 || isThe (top t2) then False
-   else if isThe (top t1) then True
-          else length (args t1) == length (args t2)  
-                  && and [isInstanceOf x y | (x,y) <- zip (args t1) (args t2)]
-
-
+{-
 couldMatch :: Grammar -> (Tree,Tree) -> Bool
 couldMatch gr (t1,t2) = 
 
        let trs = parse gr (linearize gr t1)
            in elem t2 trs   -- need smth better .... (will think about it - maybe like lemma + form)
- -- maybe better if they have at least 1 linearization in common 
-
+-- maybe better if they have at least 1 linearization in common 
+-}
 
 --------------------------------------------------------------------------------
 -- fingerprint types
@@ -237,7 +247,7 @@ diff (t1,t2)
 difference :: Grammar -> [Tree] -> IO Tree
 difference gr (t1:t2:[]) = 
          do d <- diff (t1,t2) 
-            --putStrLn $ "the difference of " ++ show t1 ++ " and " ++ show t2 ++ " is "++ show d ++"\n"
+            --putStrLn $ "\nthe difference of " ++ show t1 ++ " and " ++ show t2 ++ " is "++ show d ++"\n"
             return d
 difference gr (t1:t2:ts) = 
    do d <- diff (t1,t2) 

@@ -192,16 +192,27 @@ mkSizes gr =
     if s == 0
       then (1, \0 -> [])
       else (0, error "empty")
-
+{-
   catList' [c] s =
     parts [ (n, \i -> [App f (h i)])
-          | s > 0
+          | s > 0 
           , f <- symbols gr
           , let (xs,y) = typ f
           , y == c
           , let (n,h) = catList xs (s-1)
           ]
-
+-}
+  catList' [c] s =
+    parts [ (n, \i -> [App f (h i)])
+          | f <- symbols gr
+          , s >= sizeFun f
+          , let (xs,y) = typ f
+          , y == c
+          , let (n,h) = catList xs (s- sizeFun f)
+          ]
+       where 
+         sizeFun f | isThe f = 0 
+                   | otherwise = 1  
   catList' (c:cs) s =
     parts [ (nx*nxs, \i -> hx (i `mod` nx) ++ hxs (i `div` nx))
           | k <- [0..s]
