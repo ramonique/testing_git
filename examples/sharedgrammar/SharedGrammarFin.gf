@@ -9,7 +9,7 @@ lincat
   PP = SS ;
 
   Verb   = SS ; --{s : Agr => Str} ;
-  Verb2  = Verb ** {obj : Case} ;
+  Verb2  = {s : Str ; obj : Case} ;
   Verb2Verb = Verb ** {obj : Case} ;
   Verb3  = Verb ** { do : Case ; io : Case} ;
   VerbPhrase  = SS ;
@@ -40,12 +40,15 @@ oper
     lin Preposition {s = str ; c = cas} ;
 
   mkV : Str -> Verb = \v -> lin Verb (ss v) ;
+ 
+  mkV2 : Str -> Case -> Verb2 = \v,cas -> 
+    lin Verb2 {s = v ; obj = cas} ;
 
 lin
 
   --Originally from Duck
   VtoVP v = v ; 
---  V2toVP v2 np = ss (v2.s ++ np.s ! v2.obj) ;
+  V2toVP v2 np = ss (v2.s ++ np.s ! v2.obj) ;
   PredVP np vp = ss (np.s ! Nom ++ vp.s) ;
 
 

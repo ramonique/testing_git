@@ -1,4 +1,4 @@
 This directory contains examples of ambiguities.
 
 descriptions.txt -- Description of examples: what kind of ambiguities it has
-gold.tsv         -- Examples and number of ambiguities expected, separated by tabs
+gold.csv         -- Examples and number of ambiguities expected, separated by tabs

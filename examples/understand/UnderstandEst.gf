@@ -1,4 +1,4 @@
-concrete UnderstandEstNoRG of Understand = open Prelude in {
+concrete UnderstandEst of Understand = open Prelude in {
 
   lincat
      S = SS ;
