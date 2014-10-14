@@ -120,6 +120,42 @@ ambiguousR g rg t =
 -------------------
 -- change from here  
 
+testAll :: IO ()
+testAll = 
+  do goldRaw <- readFile "../examples/gold.csv" --["ABCD GrammarA Eng 3\nGrammarB Fre 5"]
+     let gold = map words $ lines goldRaw       --[[ABCD","GrammarA","Eng","3"]]
+     mapM_ printTests gold
+
+  where printTests :: [String] -> IO ()
+        printTests (dir:abs:conc:amb:_) =  
+          let gramDir     =  "../examples/" ++ dir ++ "/"
+              concName    = abs ++ conc
+              nameWithDir = gramDir ++ abs
+              gName = nameWithDir ++ ".pgf"
+              rgName = nameWithDir ++ conc ++"Comp.pgf"
+              numAmbs = digitToInt $ amb !! 0
+          in 
+           do currDir <- getCurrentDirectory
+              changeWorkingDirectory gramDir
+              readProcess "gf" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] []
+              readProcess "gf" ["-make", concName++"CompConc.gf"] []
+              changeWorkingDirectory currDir
+              g <- readGrammar gName 
+              rg <- readGrammar rgName
+              ambs <- filterIdentical `fmap` computeAmbiguities g rg
+              let foundAmbs = length ambs
+              putStrLn $ "\n             Grammar: " ++ concName
+              putStrLn $ "   Ambiguities found: " ++ show foundAmbs
+              putStrLn $ "Ambiguities expected: " ++ show numAmbs
+              if numAmbs == foundAmbs 
+                then putStrLn "Everything's fine! ^_^" 
+                else putStrLn "Something's wrong! :O" 
+        printTests _ = putStrLn "usage: dir, abs, conc, expected number of ambiguities"
+     
+  
+
+
+
 -- give name of the gf 
 runAll :: String -> String -> IO ()
 runAll abstractFile langName = 
