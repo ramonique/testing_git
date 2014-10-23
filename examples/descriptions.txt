@@ -1,6 +1,27 @@
 ABCD:
-  TODO
   Has three variations of a simple grammar with terms A, B, C, D and S. 
+  GrammarA has 1 ambiguity. The sentence a can be either 
+          (AtoS aA)
+        | (BtoS aB)
+
+
+  GrammarAS has 1 ambiguity.
+  Two consecutive a's can be parsed either as 
+    s1 (a a) b
+    s1 a (s1 a b).
+  
+  GrammarABCD has 1 ambiguity.
+
+all:
+  Combines the ambiguities of YouWalk (1), Duck (3) and Telescope (3).
+  The result should be a sum of the ambiguities
+
+  Duck adds ditransitive verbs to the mix, which adds the ambiguities
+  to 7, due to the ambiguities in Telescope: an ambiguous NP can be
+  either in a subject, object or indirect object position.
+
+  From a practical point of view, 6 or 7 are both fine numbers.
+
 
 barn_ar_vilt:
   A complement is ambiguous only if the subject is of neutrum gender.
@@ -32,8 +53,25 @@ made_her_duck:
          * (NP her) (V duck)
          * (NP her) (N duck)
 
+  The ambiguities are three:
+    a) she made her <NOUN>
+        Ambiguous between make_V2 & her_Poss and make_V3 & her_Obj
+
+    b) she made <NOUN> duck
+        Ambiguous between make_V2v & duck_V and make_V2 & duck_N
+
+    c) she made her duck
+        Ambiguous between
+           make_V2V, she_Pron, duck_V
+           make_V2 , she_Poss, duck_N
+           make_V3 , she_Pron, duck_N
+
 many_tigers_panthers_fish:
-  TODO
+  Two varieties of lexical ambiguity: Fish is identical in Sg and Pl,
+  and Cat is identical with Tiger in Sg, and with Dog in Pl.
+
+  Each of the four lexical items; Tiger, Cat, Dog and Fish should be reported.
+  Nothing with the-functions in this grammar.
 
 obj_or_adv:
   This grammar is ambiguous in Finnish but not in English.
