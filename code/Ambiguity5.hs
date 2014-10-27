@@ -75,8 +75,9 @@ getRTree :: Grammar -> Tree -> Tree
 getRTree rg t = 
    let pp =  parse rg $ showTree t
      in 
-      if length pp /= 1 then error $ "this tree doesn't parse in original grammar : " ++ showTree t 
-         else head pp
+        head pp
+      -- if length pp /= 1 then error $ "this tree doesn't parse in original grammar : " ++ showTree t 
+      --    else head pp
 
 -- linearize R-tree
 rlin :: Tree -> Grammar -> Grammar -> String 
@@ -133,7 +134,7 @@ testAll =
               nameWithDir = gramDir ++ abs
               gName = nameWithDir ++ ".pgf"
               rgName = nameWithDir ++ conc ++"Comp.pgf"
-              numAmbs = digitToInt $ amb !! 0
+              numAmbs = read amb
           in 
            do currDir <- getCurrentDirectory
               changeWorkingDirectory gramDir
@@ -144,12 +145,15 @@ testAll =
               rg <- readGrammar rgName
               ambs <- filterIdentical `fmap` computeAmbiguities g rg
               let foundAmbs = length ambs
-              putStrLn $ "\n             Grammar: " ++ concName
+              putStrLn "---------------------------------------"
+              prettyPrintAmbiguities g rg showAmbIK
+              putStrLn $ "             Grammar: " ++ concName
               putStrLn $ "   Ambiguities found: " ++ show foundAmbs
               putStrLn $ "Ambiguities expected: " ++ show numAmbs
               if numAmbs == foundAmbs 
                 then putStrLn "Everything's fine! ^_^" 
                 else putStrLn "Something's wrong! :O" 
+              putStrLn "---------------------------------------"
         printTests _ = putStrLn "usage: dir, abs, conc, expected number of ambiguities"
      
   
@@ -184,6 +188,7 @@ prettyPrintAmbiguities g rg showFunc =
   do ambs <- filterIdentical `fmap` computeAmbiguities g rg
      mapM_ (putStrLn.(showFunc g rg)) ambs
      putStrLn $ "The number of ambiguities : " ++ show (length ambs)
+     putStrLn ""
 
 
 --replace hole with one of the trees and linearize that
@@ -244,9 +249,9 @@ niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
 -- setInstance : Ambiguous trees from fingerprint -> New ambiguous trees -> Should they be added ?
 setInstance :: [Tree] -> [Tree] -> IO Bool
 setInstance ts cs = 
-   do putStrLn $ "\n\ncomparison between " ++ show ts ++ "  \n and \n  " ++ show cs ++ " is : "
+   do --putStrLn $ "\n\ncomparison between " ++ show ts ++ "  \n and \n  " ++ show cs ++ " is : "
       let r =  or [equalOrGen t c | c<- cs, t <-ts]
-      putStr $ " r is : " ++ show r
+      --putStr $ " r is : " ++ show r
       return r 
 
 -- t1 is equal or a generalization of t2
