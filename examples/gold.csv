@@ -7,7 +7,7 @@ complement-fixing_mouse_antibody Grammar3 Eng 4
 complement-fixing_mouse_antibody Grammar3 Fre 4
 delicious_fish Grammar4 Eng 0
 made_her_duck Duck Eng 3
-many_tigers_panthers_fish Grammar9 Conc 2
+many_tigers_panthers_fish Grammar9 Conc 4
 obj_or_adv ObjAdv Fin 1
 obj_or_adv ObjAdvWithTransVerbs Fin 2
 orange_and_apple Grammar8 Conc 4
@@ -17,3 +17,4 @@ with_telescope WithTelescope Eng 3
 with_telescope WithTelescope2 Eng 3
 with_telescope WithTelescope3 Eng 4
 you_walk YouWalk Eng 1
+phrasebook-mini Phrasebook Eng 999999
