@@ -251,11 +251,7 @@ niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
 setInstance :: [Tree] -> [Tree] -> IO Bool
 setInstance ts cs = 
    do --putStrLn $ "\n\ncomparison between " ++ show ts ++ "  \n and \n  " ++ show cs ++ " is : "
-<<<<<<< HEAD
       let r = and [or [equalOrGen t c | t <- ts] | c <- cs] --or [equalOrGen t c | c<- cs, t <-ts]
-=======
-      let r =  or [equalOrGen t c | c<- cs, t <-ts]
->>>>>>> c7c68725090b50c8fb5717514e0a627c9aca1d61
       --putStr $ " r is : " ++ show r
       return r 
 
