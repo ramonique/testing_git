@@ -1,0 +1,12 @@
+AMB 1
+[PredVP[theNounPhrase_10] [PrepVP[PrepVP[theVerbPhrase_10][BasicPP[thePreposition_10][theNounPhrase_10]]][thePP_10]]]
+[PredVP[theNounPhrase_10] [PrepVP[theVerbPhrase_10][BasicPP[thePreposition_10][PrepNP[theNounPhrase_10][thePP_10]]]]
+
+
+AMB 2
+[PredVP[theNounPhrase_10][PrepVP[theVerbPhrase_10][BasicPP With[PrepNP[theNounPhrase_10][thePP_10]]]]]
+[PredVP[theNounPhrase_10][PrepVP[PrepVP[theVerbPhrase_10][BasicPP With[theNounPhrase_10]]][thePP_10]]]
+
+AMB 3
+[PredVP[theNounPhrase_10][PrepVP[V2toVP[theVerb2_10][theNounPhrase_10]][thePP_10]]]
+[PredVP[theNounPhrase_10][V2toVP[theVerb2_10][PrepNP[theNounPhrase_10][thePP_10]]]]

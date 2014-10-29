@@ -211,8 +211,9 @@ mkSizes gr =
           , let (n,h) = catList xs (s- sizeFun f)
           ]
        where 
-         sizeFun f | isThe f = 0 
-                   | otherwise = 1  
+         sizeFun f | isThe f       = 0
+                   | show f == "0" = 0 
+                   | otherwise     = 1  
   catList' (c:cs) s =
     parts [ (nx*nxs, \i -> hx (i `mod` nx) ++ hxs (i `div` nx))
           | k <- [0..s]
