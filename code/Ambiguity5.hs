@@ -90,7 +90,7 @@ rlin t g rg = linearize g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t)
 maxTreeSize = 15 
 -- maximum size of the trees we want to generate
 
-maxTreeNo = 300
+maxTreeNo = 3000
 -- maximum number of trees we deal with
 
 
@@ -104,9 +104,9 @@ findStartTrees g rg =
                -- [(l, parse g l) | t <- rezult, let l = rlin t g rg] 
               -- map fromJust $ nub $ filter isJust $ 
             --do rezs <- mapM (ambiguousR g rg) rezult
-          let rezs = map (ambiguousR g rg) rezult in 
-              do  --putStrLn $ "\n\n\nThe initial trees are : " ++ show rez' ++ "\n\n\n"
-                  return $ map fromJust $ nub $ filter isJust rezs
+          let rezs = map fromJust $ nub $ filter isJust $ map (ambiguousR g rg) rezult in 
+              do  --putStrLn $ "\n\n\nThe initial trees are : " ++ show (take 10 rezs) ++ "\n\n\n"
+                  return rezs
 
 ambiguousR :: Grammar -> Grammar -> Tree -> Maybe  [Tree]
 ambiguousR g rg t =  
@@ -147,6 +147,7 @@ testAll =
               putStrLn $ "\n             Grammar: " ++ concName
               putStrLn $ "   Ambiguities found: " ++ show foundAmbs
               putStrLn $ "Ambiguities expected: " ++ show numAmbs
+              prettyPrintAmbiguities g rg showAmbIK
               if numAmbs == foundAmbs 
                 then putStrLn "Everything's fine! ^_^" 
                 else putStrLn "Something's wrong! :O" 
@@ -182,14 +183,14 @@ runAll abstractFile langName =
 prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Grammar -> Ambiguity -> String) -> IO ()
 prettyPrintAmbiguities g rg showFunc = 
   do ambs <- filterIdentical `fmap` computeAmbiguities g rg
-     mapM_ (putStrLn.(showFunc g rg)) ambs
+     mapM_ (putStrLn.(showFunc g rg)) (reverse ambs)
      putStrLn $ "The number of ambiguities : " ++ show (length ambs)
 
 
 --replace hole with one of the trees and linearize that
 --then show all the trees
 showAmbIK :: Grammar -> Grammar -> Ambiguity -> String
-showAmbIK g rg (trs@(t1:_),ctx) = "Sentence: " ++ rlin (fill ctx t1) g rg ++ 
+showAmbIK g rg (trs@(t1:_),ctx) = "Sentence: " ++ unwords (filter (/="0") $ words $ rlin (fill ctx t1) g rg) ++ 
                                "\n Context: " ++ lin ctx ++ 
                                "\n   Trees: " ++ concat (intersperse "\n        | " $
                                                          map lin trs) ++ "\n"
@@ -244,9 +245,9 @@ niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
 -- setInstance : Ambiguous trees from fingerprint -> New ambiguous trees -> Should they be added ?
 setInstance :: [Tree] -> [Tree] -> IO Bool
 setInstance ts cs = 
-   do putStrLn $ "\n\ncomparison between " ++ show ts ++ "  \n and \n  " ++ show cs ++ " is : "
-      let r =  or [equalOrGen t c | c<- cs, t <-ts]
-      putStr $ " r is : " ++ show r
+   do --putStrLn $ "\n\ncomparison between " ++ show ts ++ "  \n and \n  " ++ show cs ++ " is : "
+      let r = and [or [equalOrGen t c | t <- ts] | c <- cs] --or [equalOrGen t c | c<- cs, t <-ts]
+      --putStr $ " r is : " ++ show r
       return r 
 
 -- t1 is equal or a generalization of t2
