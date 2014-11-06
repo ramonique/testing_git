@@ -83,6 +83,9 @@ getRTree rg t =
 rlin :: Tree -> Grammar -> Grammar -> String 
 rlin t g rg = linearize g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t))
 
+rlinAll :: Tree -> Grammar -> Grammar -> [String]
+rlinAll t g rg = linearizeAll g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t))
+-- TO DO : need to see if this linearizeAll does the right thing...
 
 -----------------------------
 
@@ -91,7 +94,7 @@ rlin t g rg = linearize g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t)
 maxTreeSize = 15 
 -- maximum size of the trees we want to generate
 
-maxTreeNo = 3000
+maxTreeNo = 600
 -- maximum number of trees we deal with
 
 
@@ -250,7 +253,7 @@ niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
 -- setInstance : Ambiguous trees from fingerprint -> New ambiguous trees -> Should they be added ?
 setInstance :: [Tree] -> [Tree] -> IO Bool
 setInstance ts cs = 
-   do --putStrLn $ "\n\ncomparison between " ++ show ts ++ "  \n and \n  " ++ show cs ++ " is : "
+   do --putStrLn $ "\n\ncomparison between\n" ++ unlines (map show ts) ++ "  \n and \n" ++ unlines (map show cs) ++ " \n is : "
       let r = and [or [equalOrGen t c | t <- ts] | c <- cs] --or [equalOrGen t c | c<- cs, t <-ts]
       --putStr $ " r is : " ++ show r
       return r 
@@ -259,7 +262,8 @@ setInstance ts cs =
 equalOrGen :: Tree -> Tree -> Bool 
 equalOrGen t1 t2 = 
    if isThe (top t1) then True
-      else  top t1 == top t2 && and [equalOrGen x y | (x,y) <- zip (args t1) (args t2)] 
+      else  top t1 == top t2 && (and [equalOrGen x y | (x,y) <- zip (args t1) (args t2)]) 
+                    -- || or [equalOrGen t1 t | t <- args t2])
 
 {-
 couldMatch :: Grammar -> (Tree,Tree) -> Bool
@@ -269,6 +273,26 @@ couldMatch gr (t1,t2) =
            in elem t2 trs   -- need smth better .... (will think about it - maybe like lemma + form)
 -- maybe better if they have at least 1 linearization in common 
 -}
+
+--------------------------------------------------------------------------------
+-- implement Koen's idea to consider trees as ambiguous if they have all fields the same
+--------------------------------------------------------------------------------
+-- in order to see that they have even the invisible arguments the same, one can try to parse them as the same
+-- category in the R-grammar - for this there is no need for tweeking the PGF compiler
+
+
+isNewAmbTree :: Grammar -> Grammar -> Tree -> Maybe [(Tree,Tree)] 
+isNewAmbTree g rg t = 
+   let trs = parse g (rlin t g rg)
+       rtrs = map (getRTree rg) trs
+       rezs = filter isEqual  [(t1,t2) | t1 <- rtrs, t2 <- rtrs, t1 /= t2]   
+       in 
+       if null rezs then Nothing
+          else Just rezs
+    where 
+      isEqual (t1,t2) = 
+          if catOf t1 /= catOf t2 then False  
+           else rlinAll t g rg == rlinAll t g rg   
 
 --------------------------------------------------------------------------------
 -- fingerprint types
