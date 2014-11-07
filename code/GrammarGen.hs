@@ -37,11 +37,12 @@ data Symbol
 
 data Grammar
   = Grammar
-  { parse     :: String -> [Tree]
-  , linearize :: Tree -> String
-  , startCat  :: Cat
-  , symbols   :: [Symbol]
-  , sizes     :: Sizes
+  { parse        :: String -> [Tree]
+  , linearize    :: Tree -> String
+  , linearizeAll :: Tree -> [String]
+  , startCat     :: Cat
+  , symbols      :: [Symbol]
+  , sizes        :: Sizes
   }
 
 
@@ -120,6 +121,9 @@ toGrammar pgf =
   
         , linearize = \t ->
             PGF.linearize pgf lang (mkExpr t)
+
+        , linearizeAll = \t -> 
+            PGF.linearizeAll pgf (mkExpr t)
 
         , startCat =
             mkCat (PGF.startCat pgf)
@@ -259,11 +263,11 @@ shrinkTree gr t@(App f xs) =
           , tp == catOf t
           ]
     ts -> ts)
-  ++ [ App g (args (fst (typ g)) xs)
+  {- ++ [ App g (args (fst (typ g)) xs)
      | g <- symbols gr
      , not (isThe g)
      , g <<< f
-     ]
+     ] -}
   ++ [ App f (take i xs ++ [x'] ++ drop (i+1) xs)
      | i <- [0..length xs-1]
      , x' <- shrinkTree gr (xs !! i)
