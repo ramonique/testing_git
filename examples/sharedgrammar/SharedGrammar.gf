@@ -1,6 +1,7 @@
 abstract SharedGrammar = {
 
-cat SimpleNoun; 
+cat --Comp ;
+    SimpleNoun; 
     NounPhrase;
     Verb;
     Verb2; 
