@@ -1,23 +1,22 @@
 --# -path=.:../sharedgrammar
-concrete HusSwe of Hus = SharedGrammarSwe - [SimpleNoun] ** open Prelude in {
+concrete HusSwe of Hus = SharedGrammarSwe - [DetNP] ** open Prelude in {
 
 lincat
-  SimpleNoun = {s : Number => Str} ;
   Comp = {s : Number => Str} ;
-  
-  NumNoun = {s : Str ; n : Number} ;
+  Det = SS ** {n : Number} ;
 
 lin
-  CompS numnoun comp = ss (numnoun.s ++ "är" ++ comp.s ! numnoun.n) ;
-  MkS n1 v n2 = ss (n1.s ++ v.s ++ n2.s) ;
+  CompS np comp = ss (np.s ! Subj ++ "är" ++ comp.s ! np.n) ;
 
-  Gilla = ss "gillar" ;
-  Hus = {s = table {Sg => "hus" ; Pl => "hus"}} ;
+  Jag = mkNP "jag" "mig" "min" ;
+  Gilla = mkV "gillar" ** {obj = Obj};
+  Hus = mkN "hus" "hus" "hus" ;
   Bra = {s = table {Sg => "bra" ; Pl => "bra"}} ;
-  Singular n = {s = n.s ! Sg ; n = Sg} ;
-  Plural n = {s = n.s ! Pl   ; n = Pl} ;
+  Ett = {s = "" ; n = Sg} ;
+  De  = {s = ""; n = Pl} ;
 
-param
-  Number = Sg | Pl ;
+  DetNP det noun = {s = \\cas => det.s ++ (noun.s ! det.n ! cas) ;
+		    n = det.n} ;
+
 
 }

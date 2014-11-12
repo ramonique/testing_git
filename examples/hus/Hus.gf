@@ -1,20 +1,21 @@
 --# -path=.:../sharedgrammar
-abstract Hus = SharedGrammar ** {
+abstract Hus = SharedGrammar - [DetNP] ** {
 flags startcat = S ;
 cat
-  NumNoun ; Comp ;
+  Comp ;
+  Det ;
 
 fun
-  CompS : NumNoun -> Comp -> S ;
-  MkS : NumNoun -> Verb2 -> NumNoun -> S ;
+  CompS : NounPhrase -> Comp -> S ;
+  DetNP : Det -> SimpleNoun -> NounPhrase ;
 
-
+  Jag : NounPhrase ;
   Hus : SimpleNoun ;
   Bra : Comp ;
   Gilla : Verb2 ;
-
-  Singular : SimpleNoun -> NumNoun ;
-  Plural : SimpleNoun -> NumNoun ;
+  Ett : Det ;
+  De  : Det ;
+  
 
 }
 -- hus är bra
