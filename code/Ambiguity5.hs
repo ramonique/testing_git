@@ -249,8 +249,22 @@ makeIntervalMap ss =
 -- topological order of categories (needed for new algorithm)
 
 topSort :: Grammar -> [Cat]
-topSort = getAllCats
+topSort gram = updateTopOrder S.empty (S.fromList $ getAllCats gram) (symbols gram)
+    
+   where
+   updateTopOrder :: S.Set Cat -> S.Set Cat -> [Symbol] -> [Cat]
+   updateTopOrder topSet remSet symbs 
+          | S.null remSet  = S.toList topSet
+          | otherwise = 
+               let (nextSet,restSet) = S.partition (buildableWith topSet symbs) remSet
+                   in updateTopOrder (S.union topSet nextSet) restSet symbs
 
-
-
+   buildableWith :: S.Set Cat -> [Symbol] -> Cat -> Bool
+   buildableWith topSet symbs cat = 
+        let symbsCat = filter (\s -> let ss = fst (typ s) 
+                              in snd (typ s)==cat && and [or [S.member s topSet | s <- ss ]]) symbs
+          in (not . null) symbsCat
+ 
+  
 -- getAllCats 
+-- TO DO : write properties for it !!
