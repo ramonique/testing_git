@@ -336,3 +336,6 @@ rlinAll t g rg = linearizeAll g (typeTree g $ fromJust $ PGF.readExpr (linearize
 -- TO DO : need to see if this linearizeAll does the right thing...
 
 
+-- all categories from a grammar
+getAllCats :: Grammar -> [Cat] 
+getAllCats = S.toList . S.fromList . map (snd . typ) . symbols 

@@ -28,8 +28,8 @@ readGrams filepath1 filepath2 = do
   return (gram,rgram,rcats)
 
 
-testAll :: IO ()
-testAll = 
+testAll :: (Grammar -> Grammar -> IO [[Tree]]) -> IO ()
+testAll fTrees = 
   do goldRaw <- readFile "../examples/gold.csv" --["ABCD GrammarA Eng 3\nGrammarB Fre 5"]
      let gold = map words $ lines goldRaw       --[[ABCD","GrammarA","Eng","3"]]
      mapM_ printTests gold
@@ -50,14 +50,14 @@ testAll =
               changeWorkingDirectory currDir
               g <- readGrammar gName 
               rg <- readGrammar rgName
-              ambs <- filterIdentical `fmap` computeAmbiguities g rg
+              ambs <- filterIdentical `fmap` computeAmbiguities g rg fTrees
               let foundAmbs = length ambs
               putStrLn "---------------------------------------"
-              prettyPrintAmbiguities g rg showAmbIK
+              prettyPrintAmbiguities g rg fTrees showAmbIK 
               putStrLn $ "             Grammar: " ++ concName
               putStrLn $ "   Ambiguities found: " ++ show foundAmbs
               putStrLn $ "Ambiguities expected: " ++ show numAmbs
-              prettyPrintAmbiguities g rg showAmbIK
+              prettyPrintAmbiguities g rg fTrees showAmbIK
               if numAmbs == foundAmbs 
                 then putStrLn "Everything's fine! ^_^" 
                 else putStrLn "Something's wrong! :O" 
@@ -69,8 +69,8 @@ testAll =
 
 
 -- give name of the gf 
-runAll :: String -> String -> IO ()
-runAll abstractFile langName = 
+runAll :: String -> String -> (Grammar -> Grammar -> IO [[Tree]]) -> IO ()
+runAll abstractFile langName fTrees = 
   let newName = reverse $ takeWhile (/='/') $ tail $ dropWhile (/='.') $ reverse abstractFile
       nameWithDir = reverse $ tail $ dropWhile (/='.') $ reverse abstractFile 
       concName = newName++langName
@@ -87,13 +87,13 @@ runAll abstractFile langName =
        changeWorkingDirectory currDir
        g <- readGrammar gName 
        rg <- readGrammar rgName
-       prettyPrintAmbiguities g rg showAmbIK
+       prettyPrintAmbiguities g rg fTrees showAmbIK
 
 
 
-prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Grammar -> Ambiguity -> String) -> IO ()
-prettyPrintAmbiguities g rg showFunc = 
-  do ambs <- filterIdentical `fmap` computeAmbiguities g rg
+prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Grammar -> IO [[Tree]]) -> (Grammar -> Grammar -> Ambiguity -> String) -> IO ()
+prettyPrintAmbiguities g rg fTrees showFunc = 
+  do ambs <- filterIdentical `fmap` computeAmbiguities g rg  fTrees
      mapM_ (putStrLn.(showFunc g rg)) (reverse ambs)
      putStrLn $ "The number of ambiguities : " ++ show (length ambs)
      putStrLn ""

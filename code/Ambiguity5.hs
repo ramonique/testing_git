@@ -24,12 +24,19 @@ maxTreeSize = 15
 maxTreeNo = 600
 -- maximum number of trees we deal with
 
+--findAnyTrees :: Grammar -> Grammar -> IO [Tree]
+findAnyTrees g rg = 
+  let 
+      cats = topSort rg 
+      rezult = take maxTreeNo $ concat [[(snd st) i | i <- [0 .. (fst st) -1]] | s <- [0..maxTreeSize], cat <- cats, let st = sizes rg cat s]
+      rezs = filter (not.null) $ concat $ map (isNewAmbTree g rg) rezult  
+    in 
+      return rezs  
 
 -- ??? It should be possible to show that the R-grammar is not ambiguous, because of type checking and the way the equivalence classes are designed
 --findStartTrees :: Grammar -> Grammar -> IO [Tree]
 findStartTrees g rg = 
-   let gr' = rg{symbols = filter (not . isThe) (symbols rg)}
-       sCat = startCat rg  
+   let sCat = startCat rg  
        rezult = take maxTreeNo $ concat $ [[(snd st) i | i <- [0 .. (fst st) - 1] ] | s <- [0..maxTreeSize], let st = sizes rg sCat s] 
     in --return $ --[fst st | s <- [1..], let st = sizes gr sCat s] 
                -- [(l, parse g l) | t <- rezult, let l = rlin t g rg] 
@@ -39,16 +46,45 @@ findStartTrees g rg =
               do  --putStrLn $ "\n\n\nThe initial trees are : " ++ show (take 10 rezs) ++ "\n\n\n"
                   return rezs
 
+------------------------------------------------------------
+-- classical condition for ambiguity
+
 ambiguousR :: Grammar -> Grammar -> Tree -> Maybe  [Tree]
 ambiguousR g rg t =  
    let trs = parse g (rlin t g rg)
     in if length trs >= 2 then Just (map (getRTree rg) trs)
              else Nothing 
+
+--------------------------------------------------------------------------------
+-- implement Koen's idea to consider trees as ambiguous if they have all fields the same
+--------------------------------------------------------------------------------
+-- in order to see that they have even the invisible arguments the same, one can try to parse them as the same
+-- category in the R-grammar - for this there is no need for tweeking the PGF compiler
+
+
+isNewAmbTree :: Grammar -> Grammar -> Tree -> [[Tree]] 
+isNewAmbTree g rg t = 
+   let trs = parse g (rlin t g rg)
+       rtrs = map (getRTree rg) trs
+     in 
+    groupTogether $ filter isEqual  [(t1,t2) | t1 <- rtrs, t2 <- rtrs, t1 /= t2]   
+        
+    where 
+      isEqual (t1,t2) = 
+          if catOf t1 /= catOf t2 then False  
+           else rlinAll t g rg == rlinAll t g rg
+  
+      groupTogether :: Eq a => [(a,a)] -> [[a]] 
+      groupTogether [] = [[]]
+      groupTogether ((x1,x2):xs) = ([x1,x2] ++ [y | (y,t) <- xs, t == x1 || t == x2] ++ [y | (t,y) <- xs, t == x1 || t == x2])  : groupTogether (filter (\(x,y) -> x /= x1 && x /= x2 && y /= x1 && y /= x2) xs)
+
+------------------------------------------------------------
+
  
     
-computeAmbiguities :: Grammar -> Grammar -> IO [Ambiguity]
-computeAmbiguities gr rg = 
-    do trees <- findStartTrees gr rg
+computeAmbiguities :: Grammar -> Grammar -> (Grammar -> Grammar -> IO [[Tree]]) -> IO [Ambiguity]
+computeAmbiguities gr rg fTrees = 
+    do trees <- fTrees gr rg
        --putStrLn $ "The trees are : \n"  ++ (show $ map (linearize rg) $ concat $ trees)
        --putStrLn "\n\n\n"
        computeFingerprint gr rg [] trees
@@ -91,24 +127,7 @@ equalOrGen t1 t2 =
                     -- || or [equalOrGen t1 t | t <- args t2])
 
 
---------------------------------------------------------------------------------
--- implement Koen's idea to consider trees as ambiguous if they have all fields the same
---------------------------------------------------------------------------------
--- in order to see that they have even the invisible arguments the same, one can try to parse them as the same
--- category in the R-grammar - for this there is no need for tweeking the PGF compiler
 
-
-isNewAmbTree :: Grammar -> Grammar -> Tree -> [(Tree,Tree)] 
-isNewAmbTree g rg t = 
-   let trs = parse g (rlin t g rg)
-       rtrs = map (getRTree rg) trs
-     in 
-    filter isEqual  [(t1,t2) | t1 <- rtrs, t2 <- rtrs, t1 /= t2]   
-        
-    where 
-      isEqual (t1,t2) = 
-          if catOf t1 /= catOf t2 then False  
-           else rlinAll t g rg == rlinAll t g rg   
 
 --------------------------------------------------------------------------------
 -- fingerprint types
@@ -226,3 +245,12 @@ makeIntervalMap ss =
   in 
     Map.fromList $ map (\((b,e),n) -> (Interval b e, mkName n)) lins
 ----------------------------------------------------------------------------------
+ 
+-- topological order of categories (needed for new algorithm)
+
+topSort :: Grammar -> [Cat]
+topSort = getAllCats
+
+
+
+-- getAllCats 
