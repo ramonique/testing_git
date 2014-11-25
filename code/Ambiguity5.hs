@@ -16,64 +16,6 @@ import Test.QuickCheck
 import qualified PGF
 import PGF( CId, mkCId, showCId )
 
---------------------------------------------------------------------------------
--- new stuff:
---------------
-
-
-data Interval = Interval Int Int
-   deriving (Show,Eq,Ord)
-
-
-isInInterval :: Int -> Interval -> Bool
-isInInterval i (Interval b e) = b <= i && i <= e
-
-catInInterval :: Name -> Map.Map Interval Name -> Maybe Name 
-catInInterval cat iv = 
-  case showCId cat of 
-     'C' : rest -> let number = read  rest :: Int
-                       hi = head $ filter (isInInterval number) $ Map.keys iv
-                     in Map.lookup hi iv     
-     _  -> Nothing  
-
-
-
-readPair :: String -> ((Int,Int),String)
-readPair = read
-
-makeIntervalMap :: String -> Map.Map Interval Name
-makeIntervalMap ss = 
- let lins = map readPair $ lines ss
-  in 
-    Map.fromList $ map (\((b,e),n) -> (Interval b e, mkName n)) lins
-
-
-----------------------------
--- R-grammar stuff
-
--- parse string to R-tree
-rparse :: String -> Grammar -> Grammar -> [Tree]
-rparse s g rg = concat $ map (parse rg) $ map showTree $ parse g s
-
--- convert tree to R-tree (!?! we assume there is only one such tree)
-getRTree :: Grammar -> Tree -> Tree
-getRTree rg t = 
-   let pp =  parse rg $ showTree t
-     in 
-        head pp
-      -- if length pp /= 1 then error $ "this tree doesn't parse in original grammar : " ++ showTree t 
-      --    else head pp
-
--- linearize R-tree
-rlin :: Tree -> Grammar -> Grammar -> String 
-rlin t g rg = linearize g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t))
-
-rlinAll :: Tree -> Grammar -> Grammar -> [String]
-rlinAll t g rg = linearizeAll g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t))
--- TO DO : need to see if this linearizeAll does the right thing...
-
------------------------------
-
 
 
 maxTreeSize = 15 
@@ -132,7 +74,6 @@ computeAmbiguities gr rg =
                 if or comps then return ambs 
                    else return $ (trs,ctx) : ambs
 
-niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
     
 -- setInstance : Ambiguous trees from fingerprint -> New ambiguous trees -> Should they be added ?
 setInstance :: [Tree] -> [Tree] -> IO Bool
@@ -251,5 +192,37 @@ isHole _ = False
 isHoleCat :: Cat -> Symbol -> Bool
 isHoleCat cat (Symbol n ([],c)) = "'*'" == show n && c == cat
 isHoleCat cat _ = False
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------
+-- Optimization for larger grammars (merge categories which would belong to different R-categories)
+--------------------------------------------------------------------------------
+
+
+
+data Interval = Interval Int Int
+   deriving (Show,Eq,Ord)
+
+
+isInInterval :: Int -> Interval -> Bool
+isInInterval i (Interval b e) = b <= i && i <= e
+
+catInInterval :: Name -> Map.Map Interval Name -> Maybe Name 
+catInInterval cat iv = 
+  case showCId cat of 
+     'C' : rest -> let number = read  rest :: Int
+                       hi = head $ filter (isInInterval number) $ Map.keys iv
+                     in Map.lookup hi iv     
+     _  -> Nothing  
+
+
+
+readPair :: String -> ((Int,Int),String)
+readPair = read
+
+makeIntervalMap :: String -> Map.Map Interval Name
+makeIntervalMap ss = 
+ let lins = map readPair $ lines ss
+  in 
+    Map.fromList $ map (\((b,e),n) -> (Interval b e, mkName n)) lins
+----------------------------------------------------------------------------------

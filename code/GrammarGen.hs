@@ -72,6 +72,7 @@ showTree (App f xs) = unwords (show f : map showTreeArg xs)
   where showTreeArg (App a []) = show a
         showTreeArg t = " ( " ++ showTree t ++ " ) "
 
+niceShow trs = "{ " ++ concat (intersperse " , " $ map show trs) ++ " }"
 
 
 catOf :: Tree -> Cat
@@ -307,3 +308,31 @@ select (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- select xs ]
 pairs :: [a] -> [(a,a)]
 pairs []     = []
 pairs (x:xs) = [ (x,y) | y <- xs ] ++ pairs xs
+
+
+--------------------------------------------------------------------------------
+
+-- Grammar and R-grammar utilities
+
+-- parse string to R-tree
+rparse :: String -> Grammar -> Grammar -> [Tree]
+rparse s g rg = concat $ map (parse rg) $ map showTree $ parse g s
+
+-- convert tree to R-tree (!?! we assume there is only one such tree)
+getRTree :: Grammar -> Tree -> Tree
+getRTree rg t = 
+   let pp =  parse rg $ showTree t
+     in 
+        head pp
+      -- if length pp /= 1 then error $ "this tree doesn't parse in original grammar : " ++ showTree t 
+      --    else head pp
+
+-- linearize R-tree
+rlin :: Tree -> Grammar -> Grammar -> String 
+rlin t g rg = linearize g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t))
+
+rlinAll :: Tree -> Grammar -> Grammar -> [String]
+rlinAll t g rg = linearizeAll g (typeTree g $ fromJust $ PGF.readExpr (linearize rg t))
+-- TO DO : need to see if this linearizeAll does the right thing...
+
+
