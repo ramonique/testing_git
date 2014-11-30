@@ -1,3 +1,44 @@
+  Look at linguistic definitions
+  Look at our definition
+  Describe these examples in the light of those two things
+
+Structural and lexical ambiguity.
+We don't consider semantic ambiguity or \emph{vagueness}, such as
+determining an absolute size, e.g. \emph{big mouse} is smaller than a
+\emph{small house}.
+The scope of this work is finding lexical and structural ambiguity;
+cases where a sentence corresponds to multiple parse trees when parsed
+with a GF grammar, but all the parses can be enumerated and the
+correct parse for the given context is among them.
+
+Lexical ambiguity stems from 
+----
+COPYPASTE FROM FRED'S CG BOOK
+
+DeRose (1988) analyzed the 1 million word Brown corpus and concluded that the rate of categorial ambiguity is around 11.0% for word form types, and over 40% for word form tokens. This figure covers paradigm-external part of speech ambiguities only.
+In Swedish, morphological ambiguities are more pervasive than in English. More than 60% of the word-form tokens are at least two-ways ambiguous, as determined on the basis of the 1 million word corpus Press-65 (Allén 1971, Berg 1978). Herz – Rimon (1990) report that the word-form ambiguity rate of Hebrew is nearly 60%.
+
+
+From Hirst (1987: 137B150) we borrow the class of analytic ambiguities. These occur when there is more than one possible analysis of a subpart, either word or longer constituent, of a sentence. There are several typical English instances. A preposition may be a verb particle or a true preposition starting a prepositional phrase as in example (d) below. Present participle readings and noun readings may be ambiguous (e). The end of a noun group may be unclear in a sequence of nouns (f). Reduced relative clauses and finite verb structures look alike (g). Two syntactic labels might be equally possible (h). Most of these ambiguities are local but some have a global flavour, especially (f) that invokes coordination and gapping.
+(d) A good pharmacist dispenses with accuracy.
+(e) We discussed running.
+(f) Bill gave the dog water and Sue the cat food.
+(g) The horse raced past the barn fell.
+(h) They are flying planes.
+True global ambiguities range over most of the sentence, as in classical laboratory sentences like:
+(i) Time flies like an arrow.
+In actual usage such instances seem to be rare, perhaps save for intentional puns. A fairly global type of ambiguity is that connected with gap finding and filling, e.g.:
+￼￼￼￼￼￼￼￼￼￼(j) Those are the boys that the police debated / about fighting /.
+￼
+where the slash ”/” indicates a potential gap site (cf. Ford – Bresnan – Kaplan 1982).
+In Constraint Grammar, ambiguities are conceived of as strict surface phenomena. A
+phrase such as the shooting of the hunters is not surface ambiguous, it consists of a plain nominal head followed by a plain nominal postmodifier. The possible ambiguity must be recognized at some ”deeper” level of syntax or semantics. However, it is not clear how the borderline between surface morphosyntax and such a deeper level of analysis should be conceived.
+A particularly recalcitrant type of ambiguity arises in connection with coordination, which, in turn, often co-occurs with various types of ellipses. Do syntagms like old men and women or fuel pump and filter have two surface syntactic analyses, thus being ambiguous and posing a challenge for Constraint Grammar parsing, or do they have only one syntactic, but possibly two semantic analyses? So much basic descriptive data seem to be lacking that this issue and similar ones must be left undecided for the time being. The individual grammar writer will have to make his/her own decisions.
+
+END COPYPASTE
+----
+
+
 ABCD:
   Has three variations of a simple grammar with terms A, B, C, D and S. 
   GrammarA has 1 ambiguity. The sentence a can be either 
