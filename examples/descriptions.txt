@@ -12,6 +12,35 @@ with a GF grammar, but all the parses can be enumerated and the
 correct parse for the given context is among them.
 
 Lexical ambiguity stems from 
+
+
+
+-----
+
+vertical and horizontal ambiguity in CFGs -- is there any application to this classification? 
+
+string "xay", two ways to be ambiguous:
+
+vertical:
+
+S -> xA
+S -> By
+
+A -> ay
+B -> xa
+
+
+horizontal:
+
+S -> xAB
+
+A -> a
+A -> 0
+
+B -> y
+B -> ay
+
+
 ----
 COPYPASTE FROM FRED'S CG BOOK
 
@@ -28,8 +57,8 @@ From Hirst (1987: 137B150) we borrow the class of analytic ambiguities. These oc
 True global ambiguities range over most of the sentence, as in classical laboratory sentences like:
 (i) Time flies like an arrow.
 In actual usage such instances seem to be rare, perhaps save for intentional puns. A fairly global type of ambiguity is that connected with gap finding and filling, e.g.:
-￼￼￼￼￼￼￼￼￼￼(j) Those are the boys that the police debated / about fighting /.
-￼
+(j) Those are the boys that the police debated / about fighting /.
+
 where the slash ”/” indicates a potential gap site (cf. Ford – Bresnan – Kaplan 1982).
 In Constraint Grammar, ambiguities are conceived of as strict surface phenomena. A
 phrase such as the shooting of the hunters is not surface ambiguous, it consists of a plain nominal head followed by a plain nominal postmodifier. The possible ambiguity must be recognized at some ”deeper” level of syntax or semantics. However, it is not clear how the borderline between surface morphosyntax and such a deeper level of analysis should be conceived.
