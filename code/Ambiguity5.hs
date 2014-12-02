@@ -26,24 +26,29 @@ maxTreeNo = 600
 
 --findAnyTrees :: Grammar -> Grammar -> IO [Tree]
 findAnyTrees g rg = 
-  let 
-      cats = topSort rg 
-      rezult = take maxTreeNo $ concat [[(snd st) i | i <- [0 .. (fst st) -1]] | s <- [0..maxTreeSize], cat <- cats, let st = sizes rg cat s]
-      rezs = filter (not.null) $ concat $ map (isNewAmbTree g rg) rezult  
-    in 
-      return rezs  
+     do putStrLn "start topological sort"
+        cats <- topSort rg
+        putStrLn $ "categories are : " ++ show cats
+        let rezult = take maxTreeNo $ concat [[(snd st) i | i <- [0 .. (fst st) -1]] | s <- [0..maxTreeSize], cat <- cats, let st = sizes rg cat s]
+        --putStrLn $ "the first trees are : " ++ show (take 10 rezult)
+        let rez = filter (not.null) $ concat $ map (isNewAmbTree g rg) rezult    
+        putStrLn $ "potentially ambiguous trees are " ++ show rez
+        return rez       
+
 
 -- ??? It should be possible to show that the R-grammar is not ambiguous, because of type checking and the way the equivalence classes are designed
 --findStartTrees :: Grammar -> Grammar -> IO [Tree]
 findStartTrees g rg = 
    let sCat = startCat rg  
+
        rezult = take maxTreeNo $ concat $ [[(snd st) i | i <- [0 .. (fst st) - 1] ] | s <- [0..maxTreeSize], let st = sizes rg sCat s] 
     in --return $ --[fst st | s <- [1..], let st = sizes gr sCat s] 
                -- [(l, parse g l) | t <- rezult, let l = rlin t g rg] 
               -- map fromJust $ nub $ filter isJust $ 
             --do rezs <- mapM (ambiguousR g rg) rezult
           let rezs = map fromJust $ nub $ filter isJust $ map (ambiguousR g rg) rezult in 
-              do  --putStrLn $ "\n\n\nThe initial trees are : " ++ show (take 10 rezs) ++ "\n\n\n"
+              do  putStrLn $ "startCat is " ++ showCId sCat
+                  putStrLn $ "\n\n\nThe initial trees are : " ++  unlines (map (\x -> let tt = PGF.readExpr $ linearize rg x in show (x, tt)) $ take 10 rezult) ++ "\n"
                   return rezs
 
 ------------------------------------------------------------
@@ -85,8 +90,8 @@ isNewAmbTree g rg t =
 computeAmbiguities :: Grammar -> Grammar -> (Grammar -> Grammar -> IO [[Tree]]) -> IO [Ambiguity]
 computeAmbiguities gr rg fTrees = 
     do trees <- fTrees gr rg
-       --putStrLn $ "The trees are : \n"  ++ (show $ map (linearize rg) $ concat $ trees)
-       --putStrLn "\n\n\n"
+       putStrLn $ "The trees are : \n"  ++ show (take 10 trees) -- (show $ map (linearize rg) $ concat $ trees)
+       putStrLn "\n\n\n"
        computeFingerprint gr rg [] trees
   where 
   computeFingerprint :: Grammar -> Grammar -> [Ambiguity] -> [[Tree]] -> IO [Ambiguity]
@@ -248,21 +253,25 @@ makeIntervalMap ss =
  
 -- topological order of categories (needed for new algorithm)
 
-topSort :: Grammar -> [Cat]
-topSort gram = updateTopOrder S.empty (S.fromList $ getAllCats gram) (symbols gram)
+topSort :: Grammar -> IO [Cat]
+topSort gram = 
+    do --putStrLn $ "all categories are : " ++ show (getAllCats gram)
+       --putStrLn $ "all symbols are " ++ show (symbols gram)
+       updateTopOrder [] (getAllCats gram) (symbols gram)
     
    where
-   updateTopOrder :: S.Set Cat -> S.Set Cat -> [Symbol] -> [Cat]
-   updateTopOrder topSet remSet symbs 
-          | S.null remSet  = S.toList topSet
-          | otherwise = 
-               let (nextSet,restSet) = S.partition (buildableWith topSet symbs) remSet
-                   in updateTopOrder (S.union topSet nextSet) restSet symbs
+   updateTopOrder :: [Cat] -> [Cat] -> [Symbol] -> IO [Cat]
+   updateTopOrder topSet [] _ = return topSet 
+   updateTopOrder topSet remSet symbs =
+               let (nextSet,restSet) = partition (buildableWith topSet symbs) remSet
+                   in 
+                     do putStr "" -- $  show nextSet ++ " --- " ++ show restSet
+                        updateTopOrder   (nextSet++topSet) restSet symbs
 
-   buildableWith :: S.Set Cat -> [Symbol] -> Cat -> Bool
+   buildableWith :: [Cat] -> [Symbol] -> Cat -> Bool
    buildableWith topSet symbs cat = 
         let symbsCat = filter (\s -> let ss = fst (typ s) 
-                              in snd (typ s)==cat && and [or [S.member s topSet | s <- ss ]]) symbs
+                              in snd (typ s)==cat && and [or [elem s topSet] | s <- ss ]) symbs
           in (not . null) symbsCat
  
   

@@ -173,7 +173,8 @@ typeTree :: Grammar -> PGF.Expr -> Tree
 typeTree gr t = 
     case (PGF.unApp t, PGF.unInt t) of 
        (Just (f,ts), _) -> 
-             let symb = head $ filter (\x -> name x == f) $ symbols gr
+             let symb' = filter (\x -> name x == f) $ symbols gr
+                 symb = if null symb' then error $ "can't find " ++ show f else head symb' 
                 in 
                  App symb [typeTree gr t' | t' <- ts]
        (_,      Just i) -> App (index i) []
@@ -323,7 +324,8 @@ getRTree :: Grammar -> Tree -> Tree
 getRTree rg t = 
    let pp =  parse rg $ showTree t
      in 
-        head pp
+        if null pp then error $ "this tree doesn't have an r-tree" ++ show t
+           else  head pp
       -- if length pp /= 1 then error $ "this tree doesn't parse in original grammar : " ++ showTree t 
       --    else head pp
 

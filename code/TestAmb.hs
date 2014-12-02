@@ -45,8 +45,8 @@ testAll fTrees =
           in 
            do currDir <- getCurrentDirectory
               changeWorkingDirectory gramDir
-              readProcess "gf" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] []
-              readProcess "gf" ["-make", concName++"CompConc.gf"] []
+              readProcess "gf" ["-make", "-src", "-gen-gram", "-gen-debug", concName++".gf"] []
+              readProcess "gf" ["-make", "-src", concName++"CompConc.gf"] []
               changeWorkingDirectory currDir
               g <- readGrammar gName 
               rg <- readGrammar rgName
@@ -78,10 +78,11 @@ runAll abstractFile langName fTrees =
       rgName = nameWithDir ++ langName ++"Comp.pgf" 
       gramDir = reverse $ dropWhile (/='/') $ reverse abstractFile  
    in 
-    do currDir <- getCurrentDirectory
-       putStrLn $ show currDir
+    do 
+       currDir <- getCurrentDirectory
+       putStrLn $ "current directory: " ++ show currDir
        changeWorkingDirectory gramDir 
-       putStrLn $ show gramDir
+       putStrLn $ "grammar directory: " ++ show gramDir
        readProcess "gf" ["-make", "-gen-gram", "-gen-debug", concName++".gf"] [] 
        readProcess "gf" ["-make", concName++"CompConc.gf"] []
        changeWorkingDirectory currDir
@@ -93,7 +94,9 @@ runAll abstractFile langName fTrees =
 
 prettyPrintAmbiguities :: Grammar -> Grammar -> (Grammar -> Grammar -> IO [[Tree]]) -> (Grammar -> Grammar -> Ambiguity -> String) -> IO ()
 prettyPrintAmbiguities g rg fTrees showFunc = 
-  do ambs <- filterIdentical `fmap` computeAmbiguities g rg  fTrees
+  do putStrLn "computing ambiguities..."
+     ambs <- filterIdentical `fmap` computeAmbiguities g rg  fTrees
+     putStrLn "showing ambiguities..."
      mapM_ (putStrLn.(showFunc g rg)) (reverse ambs)
      putStrLn $ "The number of ambiguities : " ++ show (length ambs)
      putStrLn ""
